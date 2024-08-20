@@ -40,15 +40,8 @@ def index():
     return render_template('index.html',registros=registros_ordenados)
 
 
-# mensajes_log = []
-#Funcion para insertar mensajes y guardalos en la db
-def agregar_mensajes_log(texto):
-    # mensajes_log.append(texto)
-    # guardar en db
-    nuevo_registro = Log(text=texto)
-    db.session.add(nuevo_registro)
-    db.session.commit()
 
+#Funcion para insertar mensajes y guardalos en la db
 def agregar_mensajes_log(texto):
     # Convertir el diccionario a una cadena JSON antes de guardarlo
     texto_json = json.dumps(texto)
@@ -56,8 +49,6 @@ def agregar_mensajes_log(texto):
     db.session.add(nuevo_registro)
     db.session.commit()
 
-
-#
 
 #token de verificación para la configiración
 TOKEN_NOCBOT="NOCBOTCODE"
