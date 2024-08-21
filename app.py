@@ -372,7 +372,7 @@ def enviar_mensajes_whatsapp(texto,number):
             "type": "text",
             "text": {
                 "preview_url": False,
-                "body": "🚀 Hola, Soy el Bot del NOC.\n \n📌Por favor, ingresa un número #️⃣ para recibir información.\n \n1️⃣. Información del Curso. ❔\n2️⃣. Ubicación del local. 📍\n3️⃣. Enviar temario en PDF. 📄\n4️⃣. Audio explicando curso. 🎧\n5️⃣. Video de Introducción. ⏯️\n6️⃣. Hablar con AnderCode. 🙋‍♂️\n7️⃣. Horario de Atención. 🕜 \n0️⃣. Regresar al Menú. 🕜"
+                "body": "🚀 Hola, Soy el Bot del NOC.\n \n📌Por favor, ingresa un número #️⃣ para recibir información.\n \n1️⃣. Información del NOC. ❔\n2️⃣. Ubicación del local. 📍\n3️⃣. Enviar temario en PDF. 📄\n4️⃣. Audio explicando curso. 🎧\n5️⃣. Video de Introducción. ⏯️\n6️⃣. Hablar con un asesor humano . 🙋‍♂️\n7️⃣. Horario de Atención. 🕜 \n0️⃣. Regresar al Menú. 🕜"
             }
         }
 
@@ -381,7 +381,7 @@ def enviar_mensajes_whatsapp(texto,number):
 
     headers = {
         "Content-Type":"application/json",
-        "Authorization":"Bearer EAARZA5UhHwCUBO4qF6PzVu979ewq7lfTSiiXOmOnZCzjEoYccLoR3sDg9EZAINAcAMxEMPJ8ei8YUgaWJlpATdUYb9gNFItKcD8MTHpp7cZByIo5KLoZA2CfFkSWFH2xtNDGZC1k3v8XQnisVCW6xFESA4ycUVmFZCx0XzCWs7we9dbgtnbIcOHZA3ZCq9tB7kvLRX4ozfk7NZAPbc1OPKrpPAfhTnMPmVEqeKsnYZD"
+        "Authorization":"Bearer EAARZA5UhHwCUBO9wuqmpkqoFBnrvDcIQiJx7raqZBOkzQfEoiuBTFBJ7QVz1nZCN7179eZCzezcMYlOfS5Ts0OOZBY3ZAxkFTFH2FZBRItZCLFnA8IfyZCMjrRXLgc8iCmU8QAkjASKXamT3ECtm5JfcCgZB9Ot0UwtDLjwZBX5S0UnG8ZBE2ZC0CgRDLJF0zZBO82ajNsOmJRdzyM5SObfyeG1YOGlQXdpdD3aeftvi4ZD"
     }
 
     connection = http.client.HTTPSConnection("graph.facebook.com")
