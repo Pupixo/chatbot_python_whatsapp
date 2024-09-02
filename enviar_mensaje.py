@@ -27,3 +27,38 @@ def enviar_mensaje(mensaje):
     res = conn.getresponse()
     data = res.read()
     print("Respuesta de Facebook API:", data.decode("utf-8"))
+
+
+def enviar_mensaje_lista(numero, filas,title):
+
+    rows_data = []
+    for i, nombre in enumerate(filas):
+        numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
+        rows_data.add({"id":numero_icono,"title":nombre,"description": nombre})
+
+    responder_mensaje ={
+            "messaging_product": "whatsapp",
+            "to": numero,
+            "type": "interactive",
+            "interactive":{
+                "type" : "list",
+                "body": {
+                    "text": "Selecciona Alguna Opción"
+                },
+                "footer": {
+                    "text": "Selecciona una de las opciones para poder ayudarte"
+                },
+                "action":{
+                    "button":"Ver Opciones",
+                    "sections":[
+                        {
+                            "title":title,
+                            "rows":rows_data
+                        }
+                    ]
+                }
+            }
+        }
+
+
+    enviar_mensaje(responder_mensaje)

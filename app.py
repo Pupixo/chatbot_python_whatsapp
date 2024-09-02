@@ -74,7 +74,21 @@ def recibir_mensajes():
             messages = objeto_mensaje[0]
             numero = messages.get("from", "")
             mensaje_id = messages.get("id", "")
-            texto_usuario = messages.get("text", {}).get("body", "").strip()
+
+            texto_validacion = messages.get("text", {}).get("body", "").strip()
+            print("texto_validacion...............",texto_validacion)
+            if texto_validacion:
+                texto_usuario = messages.get("text", {}).get("body", "").strip()
+                print("El mensaje es de tipo texto.")
+                print(f"Contenido del mensaje: {texto_usuario}")
+            elif "image" in messages:
+                print("El mensaje es de tipo imagen.")
+                # Acceder a los detalles de la imagen
+                texto_usuario = messages['image']['sha256']
+                print(f"sha256 de la imagen: {texto_usuario}")
+            else:
+                print("El mensaje es de un tipo no reconocido o no tiene contenido.")
+            
 
             if mensaje_id in mensajes_procesados:
                 return jsonify({'status': 'Mensaje ya procesado'}), 200
@@ -84,6 +98,10 @@ def recibir_mensajes():
             if verificar_usuario_registrado(numero):
                 manejar_usuario_registrado(numero, texto_usuario, estado_usuario)
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
+
+
+
+
 
             # Lógica para manejar respuestas de botones
             if messages.get("type") == "interactive":
