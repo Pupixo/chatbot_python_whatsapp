@@ -10,7 +10,7 @@ from consultas_gerencia import (
     obtener_escenarios_por_falla  # Nueva función importada
 )
 
-def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
+def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
     estado = estado_usuario.get(numero, {})
 
     if not estado.get("mensaje_inicial_enviado", False):
@@ -56,7 +56,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                     enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
                     time.sleep(2)
                     estado.clear()
-                    manejar_usuario_registrado(numero, "", estado_usuario)
+                    manejar_usuario_registrado(numero, "", estado_usuario,"")
 
         elif estado.get("fase") == "esperando_imagen":
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
@@ -72,7 +72,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                     enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
                     time.sleep(2)
                     estado.clear()
-                    manejar_usuario_registrado(numero, "", estado_usuario)
+                    manejar_usuario_registrado(numero, "", estado_usuario,"")
 
         else:
             try:
@@ -91,7 +91,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                             estado["intentos"] = 0
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron canales para esta Gerencia. Intente con otra.")
-                            manejar_usuario_registrado(numero, "", estado_usuario)
+                            manejar_usuario_registrado(numero, "", estado_usuario,"")
                     
                     elif estado.get("fase") == "seleccion_canal":
                         tipos_falla = obtener_tipos_falla_por_canal(seleccion)
@@ -106,7 +106,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                             estado["intentos"] = 0
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron tipos de falla para este canal. Intente con otro.")
-                            manejar_usuario_registrado(numero, "", estado_usuario)
+                            manejar_usuario_registrado(numero, "", estado_usuario,"")
                     
                     elif estado.get("fase") == "seleccion_tipo_falla":
                         aplicaciones = obtener_aplicaciones_por_falla(seleccion)
@@ -121,7 +121,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                             estado["intentos"] = 0
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron aplicaciones para este tipo de falla. Intente con otro.")
-                            manejar_usuario_registrado(numero, "", estado_usuario)
+                            manejar_usuario_registrado(numero, "", estado_usuario,"")
                     
                     elif estado.get("fase") == "seleccion_aplicacion":
                         torre_app = obtener_torre_por_aplicacion(seleccion)
@@ -140,10 +140,10 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                                 estado["intentos"] = 0
                             else:
                                 enviar_mensaje_texto(numero, "No se encontraron fallas para esta torre. Intente con otra.")
-                                manejar_usuario_registrado(numero, "", estado_usuario)
+                                manejar_usuario_registrado(numero, "", estado_usuario,"")
                         else:
                             enviar_mensaje_texto(numero, "No se encontró la torre de aplicación correspondiente. Intente con otra.")
-                            manejar_usuario_registrado(numero, "", estado_usuario)
+                            manejar_usuario_registrado(numero, "", estado_usuario,"")
 
                     elif estado.get("fase") == "seleccion_falla":
                         escenarios = obtener_escenarios_por_falla(seleccion)
@@ -158,7 +158,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                             estado["intentos"] = 0
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron escenarios para esta falla. Intente con otro.")
-                            manejar_usuario_registrado(numero, "", estado_usuario)
+                            manejar_usuario_registrado(numero, "", estado_usuario,"")
 
                     elif estado.get("fase") == "seleccion_escenario_falla":
                         enviar_mensaje_texto(numero, "Has seleccionado el escenario de falla. Ingresar la descripción de su consulta:")
@@ -173,7 +173,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                         enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
                         time.sleep(2)
                         estado.clear()
-                        manejar_usuario_registrado(numero, "", estado_usuario)
+                        manejar_usuario_registrado(numero, "", estado_usuario,"")
             except ValueError:
                 estado["intentos"] += 1
                 if estado["intentos"] < 2:
@@ -182,7 +182,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario):
                     enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
                     time.sleep(2)
                     estado.clear()
-                    manejar_usuario_registrado(numero, "", estado_usuario)
+                    manejar_usuario_registrado(numero, "", estado_usuario,"")
 
     estado_usuario[numero] = estado
 

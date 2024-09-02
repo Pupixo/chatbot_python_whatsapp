@@ -61,6 +61,7 @@ def generar_codigo_validacion():
 
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
+
     try:
         data = request.get_json()
         print("Data received:", data)
@@ -76,19 +77,23 @@ def recibir_mensajes():
             mensaje_id = messages.get("id", "")
 
             texto_validacion = messages.get("text", {}).get("body", "").strip()
+            texto_usuario=""
+            jsondata=""
             print("texto_validacion...............",texto_validacion)
             if texto_validacion:
                 texto_usuario = messages.get("text", {}).get("body", "").strip()
                 print("El mensaje es de tipo texto.")
                 print(f"Contenido del mensaje: {texto_usuario}")
+                jsondata =messages['text']
+
             elif "image" in messages:
                 print("El mensaje es de tipo imagen.")
                 # Acceder a los detalles de la imagen
-                texto_usuario = messages['image']['sha256']
+                texto_usuario = ""
+                jsondata =messages['image']
                 print(f"sha256 de la imagen: {texto_usuario}")
             else:
                 print("El mensaje es de un tipo no reconocido o no tiene contenido.")
-            
 
             if mensaje_id in mensajes_procesados:
                 return jsonify({'status': 'Mensaje ya procesado'}), 200
@@ -96,12 +101,8 @@ def recibir_mensajes():
 
             # Verificar si el usuario ya está registrado
             if verificar_usuario_registrado(numero):
-                manejar_usuario_registrado(numero, texto_usuario, estado_usuario)
+                manejar_usuario_registrado(numero, texto_usuario, estado_usuario,jsondata)
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
-
-
-
-
 
             # Lógica para manejar respuestas de botones
             if messages.get("type") == "interactive":
@@ -329,7 +330,6 @@ def recibir_mensajes():
                         enviar_mensaje_texto(numero, "Intentos fallidos, nos vemos pronto.")
                         estado_usuario.pop(numero, None)
                 return jsonify({'status': 'Respuesta a pregunta 8 procesada'}), 200
-
             # Validación del código de correo enviado
             if estado_usuario[numero].get("esperando_codigo_validacion", False):
                 if texto_usuario.upper() == estado_usuario[numero]["codigo_validacion"]:
@@ -347,7 +347,7 @@ def recibir_mensajes():
                     }
                     if registrar_usuario(usuario_data):
                         enviar_mensaje_texto(numero, "Perfecto, para poder ayudarte ingresa el número de tu requerimiento\n\n1️⃣ Canal de ventas")
-                        manejar_usuario_registrado(numero, texto_usuario, estado_usuario)
+                        manejar_usuario_registrado(numero, texto_usuario, estado_usuario,jsondata)
                         estado_usuario.pop(numero, None)  # Finaliza el proceso
                     else:
                         enviar_mensaje_texto(numero, "Hubo un error al registrar sus datos. Por favor, inténtelo de nuevo más tarde.")
