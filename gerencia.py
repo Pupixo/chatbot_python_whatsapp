@@ -1,5 +1,5 @@
 import time
-from enviar_mensaje import enviar_mensaje_texto,enviar_mensaje_lista
+from enviar_mensaje import enviar_mensaje_texto,recibir_img
 from consultas_gerencia import (
     obtener_nombres_gerencia, 
     obtener_canales_por_gerencia, 
@@ -60,8 +60,12 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
 
         elif estado.get("fase") == "esperando_imagen":
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
+
+            img=recibir_img(datajson)
+
+
             # Supongamos que manejas la recepción y guardado de la imagen aquí
-            if is_image_file(texto_usuario):  # Esta es una función ficticia que necesitas implementar
+            if is_image_file(numero,texto_usuario):  # Esta es una función ficticia que necesitas implementar
                 enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
                 estado_usuario.pop(numero, None)
             else:
