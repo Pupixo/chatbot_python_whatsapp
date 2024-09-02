@@ -49,11 +49,15 @@ def recibir_img(media_id):
     }
 
     # Solicitar los detalles del archivo multimedia
-    conn.request("GET", f"/v15.0/{media_id['id']}", headers=headers)
+    conn.request("GET", f"/v15.0/{media_id}", headers=headers)
     res = conn.getresponse()
+    print(f"Estado de la respuesta: {res.status}")
+    print(f"Encabezados de la respuesta: {res.getheaders()}")
+
+    data = res.read().decode("utf-8")
+    print(f"Respuesta completa: {data}")
 
     if res.status == 200:
-        data = res.read().decode("utf-8")
         response_json = json.loads(data)
         
         # Obtener la URL de descarga del archivo multimedia
