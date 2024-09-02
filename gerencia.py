@@ -61,13 +61,25 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
         elif estado.get("fase") == "esperando_imagen":
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
 
-            img=recibir_img(datajson)
+            mime_type=recibir_img(datajson["mime_type"])
 
 
-            # Supongamos que manejas la recepción y guardado de la imagen aquí
-            if is_image_file(numero,texto_usuario):  # Esta es una función ficticia que necesitas implementar
+            # Check for different image MIME types
+            if mime_type == "image/jpeg":
+                print("The file is a JPEG image.")
                 enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
                 estado_usuario.pop(numero, None)
+            elif mime_type == "image/png":
+                print("The file is a PNG image.")
+                enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
+                estado_usuario.pop(numero, None)
+            # else:
+            #     print(f"The file is not a JPEG, PNG, or GIF image. Detected MIME type: {mime_type}")
+                
+            # Supongamos que manejas la recepción y guardado de la imagen aquí
+            # if is_image_file(img):  # Esta es una función ficticia que necesitas implementar
+            #     enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
+            #     estado_usuario.pop(numero, None)
             else:
                 estado["intentos"] += 1
                 if estado["intentos"] < 2:
