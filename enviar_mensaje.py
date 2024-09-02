@@ -49,7 +49,7 @@ def recibir_img(media_id):
     }
 
     # Solicitar los detalles del archivo multimedia
-    conn.request("GET", f"/v15.0/{media_id}", headers=headers)
+    conn.request("GET", f"/v15.0/{media_id['id']}", headers=headers)
     res = conn.getresponse()
 
     if res.status == 200:
