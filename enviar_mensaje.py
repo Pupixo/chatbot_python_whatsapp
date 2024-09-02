@@ -73,7 +73,7 @@ def enviar_mensaje_lista(numero, filas, title):
                     }
                 }
             }
-            enviar_mensaje(responder_mensaje)
+            # enviar_mensaje(responder_mensaje)
             sections = []  # Reiniciar para la próxima tanda de secciones
             mensaje_listo = True  # Indica que hemos enviado un mensaje
 
@@ -97,8 +97,11 @@ def enviar_mensaje_lista(numero, filas, title):
                 }
             }
         }
-        enviar_mensaje(responder_mensaje)
+        # enviar_mensaje(responder_mensaje)
         mensaje_listo = True
+
+
+    print("responder_mensaje..............",responder_mensaje)
 
     # Si ningún mensaje fue enviado (cuando filas <= 10)
     if not mensaje_listo:

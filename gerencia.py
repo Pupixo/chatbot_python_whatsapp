@@ -17,11 +17,11 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
         nombres_gerencia = obtener_nombres_gerencia()
         if nombres_gerencia:
             mensaje = "Perfecto, para poder ayudarte ingresa el número de tu requerimiento:\n\n"
-            # for i, nombre in enumerate(nombres_gerencia):
-            #     numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
-            #     mensaje += f"{numero_icono} {nombre}\n"
-            # enviar_mensaje_texto(numero, mensaje)
-            enviar_mensaje_lista(numero, nombres_gerencia,"Lista de Gerencias")
+            for i, nombre in enumerate(nombres_gerencia):
+                numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
+                mensaje += f"{numero_icono} {nombre}\n"
+            enviar_mensaje_texto(numero, mensaje)
+            # enviar_mensaje_lista(numero, nombres_gerencia,"Lista de Gerencias")
             time.sleep(2)
             estado["opciones_validas"] = list(range(1, len(nombres_gerencia) + 1))
             estado["intentos"] = 0
