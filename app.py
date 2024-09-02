@@ -79,19 +79,15 @@ def recibir_mensajes():
             texto_validacion = messages.get("text", {}).get("body", "").strip()
             texto_usuario=""
             jsondata=""
-            print("texto_validacion...............",texto_validacion)
             if texto_validacion:
                 texto_usuario = messages.get("text", {}).get("body", "").strip()
-                print("El mensaje es de tipo texto.")
-                print(f"Contenido del mensaje: {texto_usuario}")
                 jsondata =messages['text']
-
             elif "image" in messages:
                 print("El mensaje es de tipo imagen.")
                 # Acceder a los detalles de la imagen
                 texto_usuario = ""
                 jsondata =messages['image']
-                print(f"sha256 de la imagen: {texto_usuario}")
+                print(f"sha256 de la imagen: {jsondata}")
             else:
                 print("El mensaje es de un tipo no reconocido o no tiene contenido.")
 
