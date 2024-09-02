@@ -62,7 +62,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
 
             mime_type=recibir_img(datajson["mime_type"])
-
+            print("mime_type..............",mime_type)
 
             # Check for different image MIME types
             if mime_type == "image/jpeg":
