@@ -1,5 +1,6 @@
 import http.client
 import json
+import time
 
 PAGE_ID = "323605944180431"
 ACCESS_TOKEN = "EAARZA5UhHwCUBO5woOQOPJZCH1TB62ZAX1kh2RsTMa4GwLVsnyAgTZCdWx9hZBm8GOfYZClTXstA1N513YLTlKQ8TAyoUdXUyHWFZCuqMBq3tkBXQrFdSxbEgTZB2YHqyQfpnod0BcH8zN0qOH5qZBXqMit2pzZCTJlBJIVXQfKtJh9cgj1nJ0ZBXnZCtRYUdBtyoG3VocqQndFy2ZB3rq5qFBM5ZAZA1AmvP94tct7jmoo"
@@ -34,7 +35,10 @@ def enviar_mensaje_lista(numero, filas,title):
     rows_data = []
     for i, nombre in enumerate(filas):
         numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
-        rows_data.add({"id":numero_icono,"title":nombre,"description": nombre})
+        rows_data.append({"id": numero_icono, "title": nombre, "description": nombre})
+
+    time.sleep(4)
+    print("rows_data...................",rows_data)
 
     responder_mensaje ={
             "messaging_product": "whatsapp",
