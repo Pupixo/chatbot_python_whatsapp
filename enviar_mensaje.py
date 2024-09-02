@@ -33,36 +33,41 @@ def enviar_mensaje(mensaje):
 def enviar_mensaje_lista(numero, filas,title):
 
     rows_data = []
+    sections = []
+
+    # Dividir las filas en secciones de 10 elementos
     for i, nombre in enumerate(filas):
         numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
         rows_data.append({"id": numero_icono, "title": nombre, "description": nombre})
+        
+        # Cada 10 filas, crea una nueva sección
+        if len(rows_data) == 10 or i == len(filas) - 1:
+            sections.append({
+                "title": f"Opciones {len(sections) + 1}",
+                "rows": rows_data
+            })
+            rows_data = []  # Reiniciar para la próxima sección
 
     time.sleep(4)
-    print("rows_data...................",rows_data)
+    print("sections...................", sections)
 
-    responder_mensaje ={
-            "messaging_product": "whatsapp",
-            "to": numero,
-            "type": "interactive",
-            "interactive":{
-                "type" : "list",
-                "body": {
-                    "text": "Selecciona Alguna Opción"
-                },
-                "footer": {
-                    "text": "Selecciona una de las opciones para poder ayudarte"
-                },
-                "action":{
-                    "button":"Ver Opciones",
-                    "sections":[
-                        {
-                            "title":title,
-                            "rows":rows_data
-                        }
-                    ]
-                }
+    responder_mensaje = {
+        "messaging_product": "whatsapp",
+        "to": numero,
+        "type": "interactive",
+        "interactive": {
+            "type": "list",
+            "body": {
+                "text": "Selecciona Alguna Opción"
+            },
+            "footer": {
+                "text": "Selecciona una de las opciones para poder ayudarte"
+            },
+            "action": {
+                "button": "Ver Opciones",
+                "sections": sections
             }
         }
-
+    }
 
     enviar_mensaje(responder_mensaje)
