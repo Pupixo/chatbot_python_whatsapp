@@ -59,9 +59,18 @@ def recibir_img(media_id):
 
     if res.status == 200:
         response_json = json.loads(data)
+
+        url = response_json.get('url')
+
+        payload = {}
+        headers = {
+            'Authorization': f'Bearer {ACCESS_TOKEN}',
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
         
         # Obtener la URL de descarga del archivo multimedia
-        media_url = response_json.get('url')
+        media_url = response.text
         if media_url:
             # Crear la carpeta si no existe
             crear_directorio(SAVE_DIRECTORY)
