@@ -1,77 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Registro de Mensajes</title>
-    <meta name="description" content="Registro de mensajes en tabla">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajes Log</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            color: #444;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
         table {
-            width: 100%;
+            width: 80%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
+            margin: 20px auto;
         }
         th, td {
-            padding: 12px;
+            border: 1px solid #ddd;
+            padding: 8px;
             text-align: left;
         }
         th {
             background-color: #f2f2f2;
         }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tr:hover {
-            background-color: #f1f1f1;
-        }
     </style>
 </head>
 <body>
+    <h2>Registro de Mensajessssssssssssssssss</h2>
 
-    <h1>Registro de Mensajes</h1>
-    <div class="container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Fecha y Hora</th>
-                    <th>Mensaje</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for registro in registros %}
-                <tr>
-                    <td>{{ registro.fecha_y_hora }}</td>
-                    <td>{{ registro.text }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
-    <script src="" async defer></script>
+    <table>
+        <tr>
+            <th>Fecha y Hora</th>
+            <th>Mensaje</th>
+        </tr>
+        {% for registro in registros %}
+            <tr>
+                <td>{{ registro.fecha_y_hora }}</td>
+                <td>{{ registro.texto }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
