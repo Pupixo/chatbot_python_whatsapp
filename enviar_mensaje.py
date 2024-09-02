@@ -33,7 +33,7 @@ def enviar_mensaje(mensaje):
 
 
 def enviar_mensaje_lista(numero, filas, title):
-    max_rows_per_section = 10
+    max_rows_per_section = 9
     max_sections_per_message = 10
 
     rows_data = []
