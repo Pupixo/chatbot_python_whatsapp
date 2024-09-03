@@ -5,6 +5,7 @@ import requests
 import os
 from datetime import datetime
 
+from conexionbd import guardar_imagen_en_db
 
 
 PAGE_ID = "323605944180431"
@@ -38,12 +39,13 @@ def enviar_mensaje(mensaje):
     print("Respuesta de Facebook API:", data.decode("utf-8"))
 
 
+
 def recibir_img(media_id, numero):
     conn = http.client.HTTPSConnection("graph.facebook.com")
     headers = {'Authorization': f'Bearer {ACCESS_TOKEN}'}
 
-    directorio = os.path.join('img_tickets_req', numero)  # Carpeta donde se guardarán las imágenes
-    os.makedirs(directorio, exist_ok=True)  # Crea el directorio si no existe
+    # directorio = os.path.join('img_tickets_req', numero)  # Carpeta donde se guardarán las imágenes
+    # os.makedirs(directorio, exist_ok=True)  # Crea el directorio si no existe
 
     try:
         conn.request("GET", f"/v15.0/{media_id}", headers=headers)
@@ -59,19 +61,19 @@ def recibir_img(media_id, numero):
         if not media_url:
             print("URL de la imagen no encontrada.")
             return
-
-        filename = f"{media_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
-        file_path = os.path.join(directorio, filename)
+        # filename = f"{media_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        # file_path = os.path.join(directorio, filename)
 
         # Descargar la imagen
         try:
             img_response = requests.get(media_url, headers=headers)
             img_response.raise_for_status()
+            img = img_response.content
 
-            with open(file_path, 'wb') as f:
-                f.write(img_response.content)
+            # Guardar la imagen en la base de datos
+            guardar_imagen_en_db(media_id, numero, img, 1)
 
-            print(f"Imagen guardada en {file_path}.")
+            print("Imagen guardada en la base de datos.")
         except requests.RequestException as e:
             print(f"Error al descargar la imagen: {e}")
 

@@ -1,4 +1,5 @@
 import pymssql
+from datetime import datetime
 
 def obtener_conexion():
     server = 'chatwsp.database.windows.net'
@@ -118,5 +119,34 @@ def obtener_credenciales():
     except pymssql.Error as e:
         print("Error al obtener credenciales de la base de datos:", e)
         return (None, None)
+    finally:
+        conn.close()
+
+
+
+def guardar_imagen_en_db(media_id, numero, img, tipo_solicitud):
+    if not media_id or not numero or not img or tipo_solicitud is None:
+        print("Datos incompletos. Verifique media_id, numero, img o tipo_solicitud.")
+        return
+
+    conn = obtener_conexion()
+    if conn is None:
+        print("No se pudo establecer la conexión con la base de datos.")
+        return
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO ImagenesWhatsapp (TipoSolicitudId, MediaId, NumeroUsu, Imagen, Fecha)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (tipo_solicitud, media_id, numero, pymssql.Binary(img), datetime.now()))
+
+            conn.commit()
+            print("Imagen insertada correctamente en la base de datos.")
+
+    except pymssql.DatabaseError as db_err:
+        print(f"Error en la base de datos: {db_err}")
+    except Exception as e:
+        print(f"Error inesperado: {e}")
     finally:
         conn.close()
