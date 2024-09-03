@@ -60,8 +60,7 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
 
         elif estado.get("fase") == "esperando_imagen":
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
-            img_ubi=recibir_img(datajson["id"])
-            print("img_ubi..............",img_ubi)
+            recibir_img(datajson["id"])
 
             mime_type =datajson["mime_type"]
             print("mime_type..............",mime_type)

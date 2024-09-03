@@ -8,7 +8,9 @@ from datetime import datetime
 
 
 PAGE_ID = "323605944180431"
-ACCESS_TOKEN = "EAARZA5UhHwCUBO5woOQOPJZCH1TB62ZAX1kh2RsTMa4GwLVsnyAgTZCdWx9hZBm8GOfYZClTXstA1N513YLTlKQ8TAyoUdXUyHWFZCuqMBq3tkBXQrFdSxbEgTZB2YHqyQfpnod0BcH8zN0qOH5qZBXqMit2pzZCTJlBJIVXQfKtJh9cgj1nJ0ZBXnZCtRYUdBtyoG3VocqQndFy2ZB3rq5qFBM5ZAZA1AmvP94tct7jmoo"
+ACCESS_TOKEN = "EAARZA5UhHwCUBO2GNYBFjAzZAlBGXsEd0UJYwm6T97Vq8iUNu0O4Y3HeQPnMhhtobal02aHFd0mgh7ZC8k8ZAl0cph4ljsaFDzwj74NCqwLXa7x2Lpq4C4yISWwZA3SYwy1l9btUqZA0xX2qeD7uDNOVdZBBbblHXJfDkK9ckMqbgroGMNi846CgYHj50rkT0lZCagRactjwOSJIkx3A3dI8ioy74ZCZBQ2fMqdzYZD"
+
+
 SAVE_DIRECTORY = 'imagenes_descargadas'  # Carpeta donde se guardarán las imágenes
 
 
@@ -38,9 +40,10 @@ def enviar_mensaje(mensaje):
 
 
 
-def crear_directorio(directorio):
-    if not os.path.exists(directorio):
-        os.makedirs(directorio)
+# def crear_directorio(directorio):
+#     if not os.path.exists(directorio):
+#         os.makedirs(directorio)
+
 
 # def recibir_img(media_id):
 #     conn = http.client.HTTPSConnection("graph.facebook.com")
@@ -51,29 +54,13 @@ def crear_directorio(directorio):
 #     # Solicitar los detalles del archivo multimedia
 #     conn.request("GET", f"/v15.0/{media_id}", headers=headers)
 #     res = conn.getresponse()
-#     print(f"Estado de la respuesta: {res.status}")
-#     print(f"Encabezados de la respuesta: {res.getheaders()}")
-
 #     data = res.read().decode("utf-8")
-#     print(f"Respuesta completa: {data}")
-
+    
 #     if res.status == 200:
 #         response_json = json.loads(data)
-
-#         url = response_json.get('url')
-
-#         payload = {}
-#         headers = {
-#             'Authorization': f'Bearer {ACCESS_TOKEN}',
-#         }
-
-#         response = requests.request("GET", url, headers=headers, data=payload)
-#         print(f"response: {response}")
-
+        
 #         # Obtener la URL de descarga del archivo multimedia
-#         media_url = response.text
-#         print(f"media_url: {media_url}")
-
+#         media_url = response_json.get('url')
 #         if media_url:
 #             # Crear la carpeta si no existe
 #             crear_directorio(SAVE_DIRECTORY)
@@ -83,75 +70,47 @@ def crear_directorio(directorio):
 #             filename = f"{media_id}_{timestamp}.jpg"
 #             file_path = os.path.join(SAVE_DIRECTORY, filename)
 
-#             # Descargar la imagen
-#             img_response = requests.get(media_url , headers=headers)
-#             print(f"img_response: {img_response}")
-
-#             if img_response.status_code == 200:
+#             # Descargar la imagen con headers si es necesario
+#             headers = {
+#                 'Authorization': f'Bearer {ACCESS_TOKEN}',  # Incluye aquí cualquier otro encabezado necesario
+#             }
+#             try:
+#                 img_response = requests.get(media_url, headers=headers)
+#                 img_response.raise_for_status()  # Lanza un error para códigos de estado HTTP 4xx/5xx
 #                 with open(file_path, 'wb') as f:
 #                     f.write(img_response.content)
 #                 print(f"Imagen descargada exitosamente y guardada en {file_path}.")
-#                 return file_path
-#             else:
-#                 print(f"Error al descargar la imagen. Código de estado: {img_response.status_code}")
-#                 return None
+#             except requests.RequestException as e:
+#                 print(f"Error al descargar la imagen: {e}")
 #         else:
 #             print("No se encontró la URL de la imagen en la respuesta.")
-#             return None
 #     else:
 #         print(f"Error al obtener los detalles del archivo multimedia. Código de estado: {res.status}")
-#         return None
-
-
 
 
 def recibir_img(media_id):
     conn = http.client.HTTPSConnection("graph.facebook.com")
-    headers = {
-        'Authorization': f'Bearer {ACCESS_TOKEN}',
-    }
+    headers = {'Authorization': f'Bearer {ACCESS_TOKEN}'}
 
-    # Solicitar los detalles del archivo multimedia
     conn.request("GET", f"/v15.0/{media_id}", headers=headers)
     res = conn.getresponse()
-    data = res.read().decode("utf-8")
     
     if res.status == 200:
-        response_json = json.loads(data)
-        
-        # Obtener la URL de descarga del archivo multimedia
-        media_url = response_json.get('url')
+        media_url = json.loads(res.read()).get('url')
         if media_url:
-            # Verificar que la URL esté correctamente formateada
-            if not media_url.startswith("http"):
-                print("La URL de la imagen no es válida:", media_url)
-                return None
-
-            # Crear la carpeta si no existe
-            crear_directorio(SAVE_DIRECTORY)
-
-            # Generar el nombre del archivo con ID y la fecha/hora
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{media_id}_{timestamp}.jpg"
+            os.makedirs(SAVE_DIRECTORY, exist_ok=True)
+            filename = f"{media_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
             file_path = os.path.join(SAVE_DIRECTORY, filename)
-
-            # Descargar la imagen con headers si es necesario
-            headers = {
-                'Authorization': f'Bearer {ACCESS_TOKEN}',  # Incluye aquí cualquier otro encabezado necesario
-            }
+            
             try:
                 img_response = requests.get(media_url, headers=headers)
-                img_response.raise_for_status()  # Lanza un error para códigos de estado HTTP 4xx/5xx
+                img_response.raise_for_status()
                 with open(file_path, 'wb') as f:
                     f.write(img_response.content)
-                print(f"Imagen descargada exitosamente y guardada en {file_path}.")
-                return file_path
+                print(f"Imagen guardada en {file_path}.")
             except requests.RequestException as e:
                 print(f"Error al descargar la imagen: {e}")
-                return None
         else:
-            print("No se encontró la URL de la imagen en la respuesta.")
-            return None
+            print("URL de la imagen no encontrada.")
     else:
-        print(f"Error al obtener los detalles del archivo multimedia. Código de estado: {res.status}")
-        return None
+        print(f"Error al obtener detalles. Código de estado: {res.status}")
