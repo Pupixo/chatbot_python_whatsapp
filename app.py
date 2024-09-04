@@ -75,21 +75,7 @@ def recibir_mensajes():
             messages = objeto_mensaje[0]
             numero = messages.get("from", "")
             mensaje_id = messages.get("id", "")
-
-            texto_validacion = messages.get("text", {}).get("body", "").strip()
-            texto_usuario=""
-            jsondata=""
-            if texto_validacion:
-                texto_usuario = messages.get("text", {}).get("body", "").strip()
-                jsondata =messages['text']
-            elif "image" in messages:
-                print("El mensaje es de tipo imagen.")
-                # Acceder a los detalles de la imagen
-                texto_usuario = ""
-                jsondata =messages['image']
-                print(f"sha256 de la imagen: {jsondata}")
-            else:
-                print("El mensaje es de un tipo no reconocido o no tiene contenido.")
+            texto_usuario = messages.get("text", {}).get("body", "").strip()
 
             if mensaje_id in mensajes_procesados:
                 return jsonify({'status': 'Mensaje ya procesado'}), 200
@@ -97,7 +83,7 @@ def recibir_mensajes():
 
             # Verificar si el usuario ya está registrado
             if verificar_usuario_registrado(numero):
-                manejar_usuario_registrado(numero, texto_usuario, estado_usuario,jsondata)
+                manejar_usuario_registrado(numero, texto_usuario, estado_usuario,messages)
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
 
             # Lógica para manejar respuestas de botones
@@ -343,7 +329,7 @@ def recibir_mensajes():
                     }
                     if registrar_usuario(usuario_data):
                         enviar_mensaje_texto(numero, "Perfecto, para poder ayudarte ingresa el número de tu requerimiento\n\n1️⃣ Canal de ventas")
-                        manejar_usuario_registrado(numero, texto_usuario, estado_usuario,jsondata)
+                        manejar_usuario_registrado(numero, texto_usuario, estado_usuario,messages)
                         estado_usuario.pop(numero, None)  # Finaliza el proceso
                     else:
                         enviar_mensaje_texto(numero, "Hubo un error al registrar sus datos. Por favor, inténtelo de nuevo más tarde.")

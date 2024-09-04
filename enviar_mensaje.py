@@ -14,6 +14,89 @@ ACCESS_TOKEN = "EAARZA5UhHwCUBO2GNYBFjAzZAlBGXsEd0UJYwm6T97Vq8iUNu0O4Y3HeQPnMhht
 
 
 
+# def enviar_mensaje_lista(numero, lista_de_gerencia,titulo,mensaje_completo):
+
+#     data ={
+#             "messaging_product": "whatsapp",
+#             "to": numero,
+#             "type": "interactive",
+#             "interactive":{
+#                 "type" : "list",
+#                 "body": {
+#                     "text": "Selecciona Alguna Opción"
+#                 },
+#                 "footer": {
+#                     "text": "Selecciona una de las opciones para poder ayudarte"
+#                 },
+#                 "action":{
+#                     "button":"Ver Opciones",
+#                     "sections":[
+#                         {
+#                             "title":"Compra y Venta",
+#                             "rows":[
+#                                 {
+#                                     "id":"btncompra",
+#                                     "title" : "Comprar",
+#                                     "description": "Compra los mejores articulos de tecnologia"
+#                                 },
+#                                 {
+#                                     "id":"btnvender",
+#                                     "title" : "Vender",
+#                                     "description": "Vende lo que ya no estes usando"
+#                                 }
+#                             ]
+#                         },{
+#                             "title":"Distribución y Entrega",
+#                             "rows":[
+#                                 {
+#                                     "id":"btndireccion",
+#                                     "title" : "Local",
+#                                     "description": "Puedes visitar nuestro local."
+#                                 },
+#                                 {
+#                                     "id":"btnentrega",
+#                                     "title" : "Entrega",
+#                                     "description": "La entrega se realiza todos los dias."
+#                                 }
+#                             ]
+#                         }
+#                     ]
+#                 }
+#             }
+#         }
+    
+
+def enviar_mensaje_lista(numero, lista_de_gerencia, titulo, mensaje_completo):
+    secciones = []
+    for i in range(0, len(lista_de_gerencia), 5):
+        seccion = {
+            "title": f"Opciones {i // 5 + 1}",
+            "rows": lista_de_gerencia[i:i + 5]
+        }
+        secciones.append(seccion)
+    
+    data = {
+        "messaging_product": "whatsapp",
+        "to": numero,
+        "type": "interactive",
+        "interactive": {
+            "type": "list",
+            "body": {
+                "text": mensaje_completo
+            },
+            "footer": {
+                "text": "Selecciona una de las opciones para poder ayudarte"
+            },
+            "action": {
+                "button": titulo,
+                "sections": secciones
+            }
+        }
+    }
+
+    return data
+
+
 def enviar_mensaje_texto(numero, mensaje_texto):
     responder_mensaje = {
         "messaging_product": "whatsapp",

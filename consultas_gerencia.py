@@ -13,17 +13,39 @@ def obtener_conexion():
         print("Error al conectar a la base de datos:", e)
         return None
 
+# def obtener_nombres_gerencia():
+#     conn = obtener_conexion()
+#     if conn:
+#         cursor = conn.cursor()
+#         query = "SELECT id nombre FROM Gerencia"
+#         cursor.execute(query)
+#         nombres = [row[0] for row in cursor.fetchall()]
+#         conn.close()
+#         return nombres
+#     else:
+#         return []
+    
+
 def obtener_nombres_gerencia():
-    conn = obtener_conexion()
-    if conn:
-        cursor = conn.cursor()
-        query = "SELECT nombre FROM Gerencia"
-        cursor.execute(query)
-        nombres = [row[0] for row in cursor.fetchall()]
-        conn.close()
-        return nombres
-    else:
+    try:
+        conn = obtener_conexion()
+        if conn:
+            with conn.cursor() as cursor:
+                query = "SELECT id, nombre FROM Gerencia"
+                cursor.execute(query)
+                nombres = [(row[0], row[1]) for row in cursor.fetchall()]
+            return nombres
+        else:
+            print("No se pudo obtener la conexión.")
+            return []
+    except Exception as e:
+        print(f"Error al obtener los nombres de gerencia: {e}")
         return []
+    finally:
+        if conn:
+            conn.close()
+
+
 
 def obtener_canales_por_gerencia(gerencia_id):
     conn = obtener_conexion()

@@ -1,5 +1,5 @@
 import time
-from enviar_mensaje import enviar_mensaje_texto,recibir_img
+from enviar_mensaje import enviar_mensaje_texto,recibir_img,enviar_mensaje_lista
 from consultas_gerencia import (
     obtener_nombres_gerencia, 
     obtener_canales_por_gerencia, 
@@ -10,28 +10,60 @@ from consultas_gerencia import (
     obtener_escenarios_por_falla  # Nueva función importada
 )
 
-def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
+
+            # for i, nombre in enumerate(nombres_gerencia):
+            #     numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
+            #     mensaje += f"{numero_icono} {nombre}\n"
+            # enviar_mensaje_texto(numero, mensaje)
+
+
+
+def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, mensaje_completo):
     estado = estado_usuario.get(numero, {})
 
     if not estado.get("mensaje_inicial_enviado", False):
-        nombres_gerencia = obtener_nombres_gerencia()
-        if nombres_gerencia:
-            mensaje = "Perfecto, para poder ayudarte ingresa el número de tu requerimiento:\n\n"
-            for i, nombre in enumerate(nombres_gerencia):
-                numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
-                mensaje += f"{numero_icono} {nombre}\n"
-            enviar_mensaje_texto(numero, mensaje)
-            # enviar_mensaje_lista(numero, nombres_gerencia,"Lista de Gerencias")
+        data_gerencia = obtener_nombres_gerencia()
+        print("data_gerencia.....................................",data_gerencia)
+        # if nombres_gerencia:
+        #     mensaje = "Perfecto, para poder ayudarte ingresa el número de tu requerimiento:\n\n"
+
+        #     enviar_mensaje_lista(numero, nombres_gerencia,"Lista de Gerencias",mensaje_completo)
+        #     time.sleep(2)
+        #     estado["opciones_validas"] = list(range(1, len(nombres_gerencia) + 1))
+        #     estado["intentos"] = 0
+        #     estado["fase"] = "seleccion_gerencia"
+        # else:
+        #     enviar_mensaje_texto(numero, "No se encontraron opciones disponibles. Intente más tarde.")
+        # estado["mensaje_inicial_enviado"] = True
+        # estado["esperando_respuesta"] = True
+
+        if data_gerencia:
+            mensaje_inicial = "Perfecto, para poder ayudarte ingresa el número de tu requerimiento:\n\n"
+
+            # Enviar mensaje con la lista de gerencias
+            enviar_mensaje_lista(numero, data_gerencia, "Lista de Gerencias", mensaje_completo)
+            
+            # Pausar la ejecución brevemente para permitir el procesamiento del mensaje
             time.sleep(2)
-            estado["opciones_validas"] = list(range(1, len(nombres_gerencia) + 1))
-            estado["intentos"] = 0
-            estado["fase"] = "seleccion_gerencia"
+            
+            # Actualizar el estado con los IDs válidos y la fase del flujo
+            estado.update({
+                "opciones_validas": [id_ for id_, _ in data_gerencia],  # Listar los IDs de las gerencias
+                "intentos": 0,
+                "fase": "seleccion_gerencia"
+            })
         else:
+            # Enviar mensaje si no se encontraron opciones de gerencia
             enviar_mensaje_texto(numero, "No se encontraron opciones disponibles. Intente más tarde.")
-        estado["mensaje_inicial_enviado"] = True
-        estado["esperando_respuesta"] = True
+
+        # Actualizar el estado para indicar que se ha enviado el mensaje inicial y se espera una respuesta
+        estado.update({
+            "mensaje_inicial_enviado": True,
+            "esperando_respuesta": True
+        })
 
     elif estado.get("esperando_respuesta", False):
+        
         if estado.get("fase") == "ingresar_descripcion":
             # Directamente almacenar la descripción
             descripcion = texto_usuario
@@ -59,28 +91,28 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, datajson):
                     manejar_usuario_registrado(numero, "", estado_usuario,"")
 
         elif estado.get("fase") == "esperando_imagen":
+            print("estado_usuario.......................",estado_usuario)
             # Aquí deberías tener la lógica para manejar la recepción de imágenes
-            recibir_img(datajson["id"],numero)
-
-            mime_type =datajson["mime_type"]
-            print("mime_type..............",mime_type)
-
+            mime_type =mensaje_completo['image']["mime_type"]
             # Check for different image MIME types
             if mime_type == "image/jpeg":
+                recibir_img(mensaje_completo['image']["id"],numero)
                 print("The file is a JPEG image.")
                 enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
                 estado_usuario.pop(numero, None)
+                print("estado_usuario.......................",estado_usuario)
             elif mime_type == "image/png":
+                recibir_img(mensaje_completo['image']["id"],numero)
                 print("The file is a PNG image.")
                 enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
                 estado_usuario.pop(numero, None)
-            # else:
-            #     print(f"The file is not a JPEG, PNG, or GIF image. Detected MIME type: {mime_type}")
-                
-            # Supongamos que manejas la recepción y guardado de la imagen aquí
-            # if is_image_file(img):  # Esta es una función ficticia que necesitas implementar
-            #     enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
-            #     estado_usuario.pop(numero, None)
+                print("estado_usuario.......................",estado_usuario)
+            elif mime_type == "image/jpg":
+                recibir_img(mensaje_completo['image']["id"],numero)
+                print("The file is a JPG image.")
+                enviar_mensaje_texto(numero, "Imagen recibida. Continuamos.")
+                estado_usuario.pop(numero, None)
+                print("estado_usuario.......................",estado_usuario)
             else:
                 estado["intentos"] += 1
                 if estado["intentos"] < 2:
