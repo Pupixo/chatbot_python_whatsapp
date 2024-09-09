@@ -95,51 +95,40 @@ def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, mensaje_co
 
 
                     if estado.get("fase") == "mensaje_inicial_enviado":
-
-                        enviar_mensaje_texto(numero, "Has seleccionado el escenario de falla. Ingresar la descripción de su consulta:")
-                        estado["fase"] = "ingresar_descripcion"
-                        estado["intentos"] = 0
-
-                        # canales = obtener_canales_por_gerencia(seleccion)
-                        # if canales:
-                        #     mensaje = "Has seleccionado una Gerencia. Ahora, selecciona el canal de venta:\n"
-                        #     for i, canal in enumerate(canales):
-                        #         numero_icono = "".join(f"{digit}\u20E3" for digit in str(i + 1))
-                        #         mensaje += f"{numero_icono} {canal}\n"
-                        #     enviar_mensaje_texto(numero, mensaje)
-                        #     estado["opciones_validas"] = list(range(1, len(canales) + 1))
-                        #     estado["fase"] = "seleccion_canal"
-                        #     estado["intentos"] = 0
-                        # else:
-                        #     enviar_mensaje_texto(numero, "No se encontraron canales para esta Gerencia. Intente con otra.")
-                        #     manejar_usuario_registrado(numero, "", estado_usuario,"")
+                        print("mensaje_completo...........................",mensaje_completo)
+                        # enviar_mensaje_texto(numero, "Has seleccionado el escenario de falla. Ingresar la descripción de su consulta:")
+                
                     
-                    elif estado.get("fase") == "seleccion_escenario_falla":
-                        enviar_mensaje_texto(numero, "Has seleccionado el escenario de falla. Ingresar la descripción de su consulta:")
+                    elif (texto_usuario) in "buscar evento":
+                        print("texto_usuario..........",texto_usuario)
+
+                        enviar_mensaje_texto(numero, "El Evento Buscado es ")
                         estado["fase"] = "ingresar_descripcion"
                         estado["intentos"] = 0
 
 
+                # else:
+                #     estado["intentos"] += 1
+                #     if estado["intentos"] < 2:
+                #         enviar_mensaje_texto(numero, f"Por favor, responda con un número entre 1 y {len(estado['opciones_validas'])} para seleccionar su opción. ({estado['intentos']}/2 intentos)")
+                #     else:
+                #         enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
+                #         time.sleep(2)
+                #         estado.clear()
+                #         manejar_usuario_registrado(numero, "", estado_usuario,"")
 
-                else:
-                    estado["intentos"] += 1
-                    if estado["intentos"] < 2:
-                        enviar_mensaje_texto(numero, f"Por favor, responda con un número entre 1 y {len(estado['opciones_validas'])} para seleccionar su opción. ({estado['intentos']}/2 intentos)")
-                    else:
-                        enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
-                        time.sleep(2)
-                        estado.clear()
-                        manejar_usuario_registrado(numero, "", estado_usuario,"")
+
             except ValueError:
-                estado["intentos"] += 1
-                if estado["intentos"] < 2:
-                    enviar_mensaje_texto(numero, f"Por favor, responda con un número entre 1 y {len(estado['opciones_validas'])} para seleccionar su opción. ({estado['intentos']}/2 intentos)")
-                else:
-                    enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
-                    time.sleep(2)
-                    estado.clear()
-                    manejar_usuario_registrado(numero, "", estado_usuario,"")
+                print("ValueError.................................")
+                # estado["intentos"] += 1
+                # if estado["intentos"] < 2:
+                #     enviar_mensaje_texto(numero, f"Por favor, responda con un número entre 1 y {len(estado['opciones_validas'])} para seleccionar su opción. ({estado['intentos']}/2 intentos)")
+                # else:
+                #     enviar_mensaje_texto(numero, "Intentos fallidos. Regresando al inicio.")
+                #     time.sleep(2)
+                #     estado.clear()
+                #     manejar_usuario_registrado(numero, "", estado_usuario,"")
 
 
 
-    estado_usuario[numero] = estado
+            # estado_usuario[numero] = estado

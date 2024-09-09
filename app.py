@@ -66,22 +66,11 @@ def generar_codigo_validacion():
 
 
 
-
-
-
-
-
-
-
-
-
-
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
 
     try:
         data = request.get_json()
-        print("Data received:", data)
 
         entry = data.get('entry', [])[0]
         changes = entry.get('changes', [])[0]
@@ -89,10 +78,12 @@ def recibir_mensajes():
         objeto_mensaje = value.get('messages', [])
 
         if objeto_mensaje:
+            print("Data received:", data)
             messages = objeto_mensaje[0]
             numero = messages.get("from", "")
             mensaje_id = messages.get("id", "")
             texto_usuario = messages.get("text", {}).get("body", "").strip()
+
 
             if mensaje_id in mensajes_procesados:
                 return jsonify({'status': 'Mensaje ya procesado'}), 200
@@ -102,8 +93,6 @@ def recibir_mensajes():
             if verificar_usuario_registrado(numero):
                 manejar_usuario_registrado(numero, texto_usuario, estado_usuario,messages)
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
-
-
 
 
 
@@ -124,6 +113,8 @@ def recibir_mensajes():
                     enviar_mensaje_texto(numero, "Okey, nos vemos pronto")
                     estado_usuario.pop(numero, None)
                     return jsonify({'status': 'Respuesta a botón procesada'}), 200
+                
+                
 
             # Si el usuario no está registrado y no tiene estado
             if numero not in estado_usuario:
@@ -234,6 +225,7 @@ def recibir_mensajes():
 
             if estado_usuario[numero].get("esperando_codigo", False):
                 if validar_codigo(texto_usuario):
+                    print("esperando_codigo estado_usuario...............",estado_usuario)
                     estado_usuario[numero]["codigo_usuario"] = texto_usuario
                     estado_usuario[numero]["esperando_codigo"] = False
                     estado_usuario[numero]["esperando_pregunta_7"] = True
@@ -248,6 +240,7 @@ def recibir_mensajes():
                     else:
                         enviar_mensaje_texto(numero, "No se encontraron alternativas para la siguiente pregunta.")
                 else:
+                    print("esperando_codigo estado_usuario...............",estado_usuario)
                     estado_usuario[numero]["intentos_codigo"] += 1
                     if estado_usuario[numero]["intentos_codigo"] == 1:
                         enviar_mensaje_texto(numero, "Código inválido, por favor vuelva a ingresar. Intento 1/2")
@@ -257,6 +250,7 @@ def recibir_mensajes():
                 return jsonify({'status': 'Intento de código procesado'}), 200
 
             if estado_usuario[numero].get("esperando_pregunta_7", False):
+                print("esperando_pregunta_7 estado_usuario...............",estado_usuario)
                 tipo_codigo = estado_usuario[numero]["tipo_codigo"]
                 valid_ids = []
             
@@ -276,6 +270,10 @@ def recibir_mensajes():
                         4: 6,
                         5: 7
                     }
+
+
+
+
                     if id_map.get(alternativa_id) in valid_ids:
                         estado_usuario[numero]["canal_ventas"] = obtener_alternativa_por_id(id_map.get(alternativa_id))  # Guardar la respuesta correcta
                         estado_usuario[numero]["esperando_pregunta_7"] = False
@@ -288,12 +286,20 @@ def recibir_mensajes():
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron alternativas para la siguiente pregunta.")
                     else:
+                        print("else esperando_pregunta_7 estado_usuario...............",estado_usuario)
+
                         estado_usuario[numero]["intentos_pregunta_7"] += 1
                         if estado_usuario[numero]["intentos_pregunta_7"] == 1:
                             enviar_mensaje_texto(numero, "Por favor, responda con un número entre 1 y 5 para seleccionar su canal donde corresponda. (1/2 intentos)")
                         elif estado_usuario[numero]["intentos_pregunta_7"] == 2:
                             enviar_mensaje_texto(numero, "Intentos fallidos, nos vemos pronto.")
                             estado_usuario.pop(numero, None)
+
+
+
+
+
+
                 except ValueError:
                     estado_usuario[numero]["intentos_pregunta_7"] += 1
                     if estado_usuario[numero]["intentos_pregunta_7"] == 1:
@@ -305,6 +311,8 @@ def recibir_mensajes():
             
             if estado_usuario[numero].get("esperando_pregunta_8", False):
                 try:
+                    print("esperando_pregunta_7 estado_usuario...............",estado_usuario)
+
                     alternativa_id = int(texto_usuario)
                     alternativas_pregunta_8 = obtener_alternativas_por_id_pregunta(8)  # Aseguramos obtener alternativas
                     if 1 <= alternativa_id <= len(alternativas_pregunta_8):

@@ -112,3 +112,69 @@ def recibir_img(media_id, numero):
 
     finally:
         conn.close()
+
+
+
+def enviar_template(numero, mensaje_texto):
+
+    payload = json.dumps({
+    "messaging_product": "whatsapp",
+    "recipient_type": "individual",
+    "to": numero,
+    "type": "template",
+    "template": {
+        "name": "servicio_historial_detalle",
+        "language": {
+        "code": "es"
+        },
+        "components": [
+        {
+            "type": "header",
+            "parameters": [
+            {
+                "type": "image",
+                "image": {
+                "link": "https://www.imprentaonline.net/blog/wp-content/uploads/DALL%C2%B7E-2023-10-16-10.41.49-Illustration-depicting-a-humanoid-robot-with-half-of-its-face-transparent-revealing-intricate-circuits-and-gears-inside.-The-robot-is-holding-a-light-1.png"
+                }
+            }
+            ]
+        },
+        {
+            "type": "body",
+            "parameters": [
+            {
+                "type": "text",
+                "text": "text-string"
+            },
+            {
+                "type": "text",
+                "text": "text-string"
+            },
+            {
+                "type": "text",
+                "text": "text-string"
+            },
+            {
+                "type": "text",
+                "text": "text-string"
+            },
+            {
+                "type": "text",
+                "text": "text-string"
+            }
+            ]
+        },
+        {
+            "type": "button",
+            "sub_type": "quick_reply",
+            "index": "0",
+            "parameters": [
+            {
+                "type": "payload",
+                "payload": "1234567"
+            }
+            ]
+        }
+        ]
+    }
+    })

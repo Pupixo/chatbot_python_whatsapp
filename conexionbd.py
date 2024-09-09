@@ -106,6 +106,9 @@ def registrar_usuario(data):
         return False
     finally:
         conn.close()
+
+
+
 def obtener_credenciales():
     conn = obtener_conexion()
     if conn is None:
@@ -150,3 +153,24 @@ def guardar_imagen_en_db(media_id, numero, img, tipo_solicitud):
         print(f"Error inesperado: {e}")
     finally:
         conn.close()
+
+
+
+        
+def obtener_usuarios():
+    conn = obtener_conexion()
+    if conn is None:
+        return (None, None)
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM usuario")  # Adjust query as needed
+        row = cursor.fetchone()
+        return row if row else (None, None)
+    except pymssql.Error as e:
+        print("Error al obtener credenciales de la base de datos:", e)
+        return (None, None)
+    finally:
+        conn.close()
+
+
