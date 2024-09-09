@@ -285,6 +285,10 @@ def recibir_mensajes():
                             enviar_mensaje_texto(numero, f"{mensaje_pregunta_8}\n\n{opciones}")
                         else:
                             enviar_mensaje_texto(numero, "No se encontraron alternativas para la siguiente pregunta.")
+
+
+                        print("if esperando_pregunta_7 estado_usuario...............",estado_usuario)
+
                     else:
                         print("else esperando_pregunta_7 estado_usuario...............",estado_usuario)
 
@@ -294,9 +298,6 @@ def recibir_mensajes():
                         elif estado_usuario[numero]["intentos_pregunta_7"] == 2:
                             enviar_mensaje_texto(numero, "Intentos fallidos, nos vemos pronto.")
                             estado_usuario.pop(numero, None)
-
-
-
 
 
 
@@ -357,7 +358,9 @@ def recibir_mensajes():
                         "id_perfil": 1  # Asignar un perfil fijo por ahora
                     }
                     if registrar_usuario(usuario_data):
-                        enviar_mensaje_texto(numero, "Perfecto, para poder ayudarte ingresa el número de tu requerimiento\n\n1️⃣ Canal de ventas")
+
+                        enviar_mensaje_texto(numero, "Ahora desde aqui vera los mensajes masivos que le enviaré")
+                        # enviar_mensaje_texto(numero, "Perfecto, para poder ayudarte ingresa el número de tu requerimiento\n\n1️⃣ Buscar Evento o Incidencia")
                         manejar_usuario_registrado(numero, texto_usuario, estado_usuario,messages)
                         estado_usuario.pop(numero, None)  # Finaliza el proceso
                     else:

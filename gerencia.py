@@ -13,9 +13,11 @@ from consultas_gerencia import (
 
 def manejar_usuario_registrado(numero, texto_usuario, estado_usuario, mensaje_completo):
     estado = estado_usuario.get(numero, {})
+    print("estado..............",estado)
+
     if not estado.get("mensaje_inicial_enviado", False):
 
-        enviar_mensaje_texto(numero, "Ahora desde aqui vera los mensajes masivos que le enviaré")
+        # enviar_mensaje_texto(numero, "Ahora desde aqui vera los mensajes masivos que le enviaré")
         time.sleep(2)
         
         # Actualizar el estado con los IDs válidos y la fase del flujo
