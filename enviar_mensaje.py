@@ -9,62 +9,9 @@ from conexionbd import guardar_imagen_en_db
 
 
 PAGE_ID = "323605944180431"
-ACCESS_TOKEN = "EAARZA5UhHwCUBO56W9WBZA4IvuMRiou0Bizh5MPeNZA4oOuQAj8CV8YlOK71mKkiZCGG6xCfOQaOqekAdNiIZC9o66BXRJ6ulrT7Gfaen9G3joBSPz2zyWl9FJkROaDK96U6MarqiVQXF2vzPKHBI73rM7viDxRXd2KeTAcIJpvdvSnUKaz2rV3cgDN8FC5gGe1EB9ibKYzYmqtzSaWdOBhLoeO3msm8fXIYZD"
+ACCESS_TOKEN = "EAARZA5UhHwCUBO841uMlwDn5VGKj91KPWE6M9zFmN6ZAUYiAPnDq8wZBhMGH5LvoGunyLgfLqas9cI1L3ZBGAHfh39HuGtjFpxAZB98kbCOnV8S1mZCuZBZA7wYRC2lEZAZAZBOe2LrMxr3CFQJaxl5W9nZCqiYC8NSAiexjZCv0847pDM1oxuH432kUuU1jbqkiHAfJL0N9lO8xQUlZBXxGtHYLlMQ2OhLS4C1VZCsHBcZD"
 
 
-
-
-# def enviar_mensaje_lista(numero, lista_de_gerencia,titulo,mensaje_completo):
-
-#     data ={
-#             "messaging_product": "whatsapp",
-#             "to": numero,
-#             "type": "interactive",
-#             "interactive":{
-#                 "type" : "list",
-#                 "body": {
-#                     "text": "Selecciona Alguna Opción"
-#                 },
-#                 "footer": {
-#                     "text": "Selecciona una de las opciones para poder ayudarte"
-#                 },
-#                 "action":{
-#                     "button":"Ver Opciones",
-#                     "sections":[
-#                         {
-#                             "title":"Compra y Venta",
-#                             "rows":[
-#                                 {
-#                                     "id":"btncompra",
-#                                     "title" : "Comprar",
-#                                     "description": "Compra los mejores articulos de tecnologia"
-#                                 },
-#                                 {
-#                                     "id":"btnvender",
-#                                     "title" : "Vender",
-#                                     "description": "Vende lo que ya no estes usando"
-#                                 }
-#                             ]
-#                         },{
-#                             "title":"Distribución y Entrega",
-#                             "rows":[
-#                                 {
-#                                     "id":"btndireccion",
-#                                     "title" : "Local",
-#                                     "description": "Puedes visitar nuestro local."
-#                                 },
-#                                 {
-#                                     "id":"btnentrega",
-#                                     "title" : "Entrega",
-#                                     "description": "La entrega se realiza todos los dias."
-#                                 }
-#                             ]
-#                         }
-#                     ]
-#                 }
-#             }
-#         }
-    
 
 def enviar_mensaje_lista(numero, lista_de_gerencia, titulo, mensaje_completo):
     secciones = []

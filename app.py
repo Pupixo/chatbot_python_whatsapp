@@ -59,6 +59,23 @@ def validar_codigo(codigo):
 def generar_codigo_validacion():
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
 
@@ -85,6 +102,10 @@ def recibir_mensajes():
             if verificar_usuario_registrado(numero):
                 manejar_usuario_registrado(numero, texto_usuario, estado_usuario,messages)
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
+
+
+
+
 
             # Lógica para manejar respuestas de botones
             if messages.get("type") == "interactive":
@@ -348,6 +369,9 @@ def recibir_mensajes():
     except Exception as e:
         print("Error en el procesamiento del mensaje:", e)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+
+
 
 def validar_correo(correo):
     patron = r'^[A-Za-z]{5,}@(globalhitss\.com|claro\.com\.pe)$'
