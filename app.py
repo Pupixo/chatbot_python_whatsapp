@@ -98,9 +98,6 @@ def recibir_mensajes():
             
             # if messages.get("type") == "button":
 
-
-
-
             # Lógica para manejar respuestas de botones
             if messages.get("type") == "interactive":
                 interactive_obj = messages.get("interactive", {})
@@ -119,8 +116,6 @@ def recibir_mensajes():
                     estado_usuario.pop(numero, None)
                     return jsonify({'status': 'Respuesta a botón procesada'}), 200
                 
-                
-
             # Si el usuario no está registrado y no tiene estado
             if numero not in estado_usuario:
                 estado_usuario[numero] = {
@@ -276,9 +271,6 @@ def recibir_mensajes():
                         5: 7
                     }
 
-
-
-
                     if id_map.get(alternativa_id) in valid_ids:
                         estado_usuario[numero]["canal_ventas"] = obtener_alternativa_por_id(id_map.get(alternativa_id))  # Guardar la respuesta correcta
                         estado_usuario[numero]["esperando_pregunta_7"] = False
@@ -303,8 +295,6 @@ def recibir_mensajes():
                         elif estado_usuario[numero]["intentos_pregunta_7"] == 2:
                             enviar_mensaje_texto(numero, "Intentos fallidos, nos vemos pronto.")
                             estado_usuario.pop(numero, None)
-
-
 
                 except ValueError:
                     estado_usuario[numero]["intentos_pregunta_7"] += 1
@@ -347,6 +337,25 @@ def recibir_mensajes():
                         enviar_mensaje_texto(numero, "Intentos fallidos, nos vemos pronto.")
                         estado_usuario.pop(numero, None)
                 return jsonify({'status': 'Respuesta a pregunta 8 procesada'}), 200
+
+            if estado_usuario[numero].get("esperando_nombre_empresa", False):
+                if validar_nombre(texto_usuario):
+                    estado_usuario[numero]["nombre_empresa"] = texto_usuario
+                    estado_usuario[numero]["esperando_nombre_empresa"] = False
+                    estado_usuario[numero]["esperando_apellido"] = True
+                    mensaje_empresa = obtener_mensaje_por_id(4)
+                    enviar_mensaje_texto(numero, mensaje_empresa)
+
+                else:
+                    estado_usuario[numero]["intentos_nombre"] += 1
+                    if estado_usuario[numero]["intentos_nombre"] == 1:
+                        enviar_mensaje_texto(numero, "Nombre inválido, por favor vuelva a ingresar. Intento 1/2")
+                    elif estado_usuario[numero]["intentos_nombre"] == 2:
+                        enviar_mensaje_texto(numero, "Nombre inválido, nos vemos pronto.")
+                        estado_usuario.pop(numero, None)
+                return jsonify({'status': 'Intento de nombre procesado'}), 200            
+            
+            
             # Validación del código de correo enviado
             if estado_usuario[numero].get("esperando_codigo_validacion", False):
                 if texto_usuario.upper() == estado_usuario[numero]["codigo_validacion"]:
@@ -379,6 +388,9 @@ def recibir_mensajes():
                         estado_usuario.pop(numero, None)  # Finaliza el proceso después de 2 intentos fallidos
                 return jsonify({'status': 'Validación de código procesada'}), 200
             
+
+            
+
             return jsonify({'status': 'Respuesta procesada'}), 200
         else:
             return jsonify({'error': 'No hay mensajes para procesar'}), 400
@@ -386,15 +398,6 @@ def recibir_mensajes():
         print("Error en el procesamiento del mensaje:", e)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
 
-
-# def validar_correo(correo):
-#     patron = r'^[A-Za-z]{5,}@(globalhitss\.com|claro\.com\.pe)$'
-#     return re.match(patron, correo) is not None
-
-# def validar_correo(correo):
-#     patron = r'^[A-Za-z0-9._]{5,}@(globalhitss\.com|claro\.com\.pe|GLOBALHITSS\.COM|CLARO\.COM\.PE)$'
-   
-#     return re.match(patron, correo) is not None
 
 def validar_correo(correo):
     patron = r'^[A-Za-z0-9._]{5,}@(globalhitss\.com|claro\.com\.pe)$'
