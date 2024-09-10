@@ -392,7 +392,7 @@ def recibir_mensajes():
 #     return re.match(patron, correo) is not None
 
 def validar_correo(correo):
-    patron = r' ^[A-Za-z0-9._]{5,}@(globalhitss\.com|claro\.com\.pe)$'
+    patron = r'^[A-Za-z0-9._]{5,}@(globalhitss\.com|claro\.com\.pe|GLOBALHITSS\.COM|CLARO\.COM\.PE)$'
    
     return re.match(patron, correo) is not None
 
