@@ -95,6 +95,11 @@ def recibir_mensajes():
                 return jsonify({'status': 'Usuario registrado, mensaje enviado'}), 200
 
 
+            
+            # if messages.get("type") == "button":
+
+
+
 
             # Lógica para manejar respuestas de botones
             if messages.get("type") == "interactive":
