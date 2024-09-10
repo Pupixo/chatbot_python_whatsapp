@@ -71,6 +71,7 @@ def recibir_mensajes():
 
     try:
         data = request.get_json()
+        print("Data received:", data)
 
         entry = data.get('entry', [])[0]
         changes = entry.get('changes', [])[0]
@@ -78,7 +79,6 @@ def recibir_mensajes():
         objeto_mensaje = value.get('messages', [])
 
         if objeto_mensaje:
-            print("Data received:", data)
             messages = objeto_mensaje[0]
             numero = messages.get("from", "")
             mensaje_id = messages.get("id", "")

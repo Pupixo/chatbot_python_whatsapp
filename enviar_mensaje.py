@@ -12,7 +12,6 @@ PAGE_ID = "323605944180431"
 ACCESS_TOKEN = "EAARZA5UhHwCUBO76HYpZCxCFki0PF2MywS1vjpb8NisUaWsNOqW0ASPSRwaGPkuJFjF69E7nBceDOzRhrT3XiDCY8Uewvl6vxXZCSS2Kw80f2TSZCK4wisd8GUHeW8NYmMDw8Qhp7OpmikgqWOpgDGfodABFleJyFPlWH3cyMKZArmro8nc8DgqDiK3k5V69WKicKJn5L07SZCiBJorgkZBN3omZCBd9vndo3bNY0QzkwlMZD"
 
 
-
 def enviar_mensaje_lista(numero, lista_de_gerencia, titulo, mensaje_completo):
     secciones = []
     for i in range(0, len(lista_de_gerencia), 5):
