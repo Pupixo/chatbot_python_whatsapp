@@ -387,10 +387,13 @@ def recibir_mensajes():
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
 
 
-
+# def validar_correo(correo):
+#     patron = r'^[A-Za-z]{5,}@(globalhitss\.com|claro\.com\.pe)$'
+#     return re.match(patron, correo) is not None
 
 def validar_correo(correo):
-    patron = r'^[A-Za-z]{5,}@(globalhitss\.com|claro\.com\.pe)$'
+    patron = r' ^[A-Za-z0-9._]{5,}@(globalhitss\.com|claro\.com\.pe)$'
+   
     return re.match(patron, correo) is not None
 
 def enviar_mensaje_inicial(numero):
