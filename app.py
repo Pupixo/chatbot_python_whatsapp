@@ -77,8 +77,12 @@ def eliminar_json_whatsapp_api():
                 except json.JSONDecodeError:
                     return jsonify({'error': 'El archivo JSON está corrupto o mal formado'}), 500
 
+            print("ID a json_data:", json_data)
+
             # Verificar que json_data es una lista
             if isinstance(json_data, list):
+                print("isinstance")
+
                 # Filtrar los mensajes cuyo 'id' no coincida con id_eliminar
                 nuevos_datos = [entry for entry in json_data if entry.get('entry', [{}])[0].get('id') != id_eliminar]
 
@@ -90,6 +94,7 @@ def eliminar_json_whatsapp_api():
                 else:
                     return jsonify({'status': 'No se encontró un mensaje con ese ID'}), 404
             else:
+                print("no isinstance")
                 return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
         else:
             return jsonify({'error': 'El archivo no existe'}), 404
@@ -99,7 +104,7 @@ def eliminar_json_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
     
-    
+
 
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
