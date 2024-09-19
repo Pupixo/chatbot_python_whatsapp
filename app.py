@@ -57,7 +57,12 @@ def eliminar_json_whatsapp_api():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
         data = request.get_json()
-        id_eliminar = data.get('id')  # Por ejemplo, supongamos que eliminamos por ID
+
+        # Validar que el JSON contenga el campo 'id'
+        if not data or 'id' not in data:
+            return jsonify({'error': 'No se proporcionó un ID válido para eliminar'}), 400
+        
+        id_eliminar = data['id']
         print("ID a eliminar:", id_eliminar)
 
         # Definir el nombre del archivo JSON
@@ -67,39 +72,32 @@ def eliminar_json_whatsapp_api():
         if os.path.exists(json_file):
             # Cargar los datos del archivo JSON
             with open(json_file, 'r') as file:
-                json_data = json.load(file)
+                try:
+                    json_data = json.load(file)
+                except json.JSONDecodeError:
+                    return jsonify({'error': 'El archivo JSON está corrupto o mal formado'}), 500
 
             # Verificar que json_data es una lista
             if isinstance(json_data, list):
                 # Filtrar los mensajes cuyo 'id' no coincida con id_eliminar
-                nuevos_datos = []
-                for entry in json_data:
-                    # Si el id no coincide con el id a eliminar, lo añadimos a los nuevos datos
-                    if entry.get('entry', [{}])[0].get('id') != id_eliminar:
-                        nuevos_datos.append(entry)
+                nuevos_datos = [entry for entry in json_data if entry.get('entry', [{}])[0].get('id') != id_eliminar]
 
-                # Guardar los datos actualizados en el archivo JSON
-                with open(json_file, 'w') as file:
-                    json.dump(nuevos_datos, file, indent=4)
-
-                # Retornar una respuesta indicando éxito
+                # Guardar los datos actualizados en el archivo JSON solo si hubo cambios
                 if len(nuevos_datos) < len(json_data):
+                    with open(json_file, 'w') as file:
+                        json.dump(nuevos_datos, file, indent=4)
                     return jsonify({'status': 'Mensaje eliminado correctamente'}), 200
                 else:
                     return jsonify({'status': 'No se encontró un mensaje con ese ID'}), 404
             else:
-                return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista.'}), 500
+                return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
         else:
-            # Si el archivo no existe, retornar un mensaje apropiado
-            return jsonify({'error': 'El archivo no existe.'}), 404
+            return jsonify({'error': 'El archivo no existe'}), 404
 
     except Exception as e:
         # Manejo de errores durante la lectura o escritura del archivo
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
-
-
-
 
 
 @app.route('/webhook', methods=['POST'])
