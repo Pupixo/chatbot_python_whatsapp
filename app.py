@@ -12,6 +12,23 @@ TOKEN_ANDERCODE = "ANDERCODE"
 mensajes_procesados = set()
 estado_usuario = {}
 
+
+# colocar en su propio archivo luego
+def filtrar_por_propiedad_text(data):
+    objetos_con_text = []
+    
+    for obj in data:
+        for entry in obj.get('entry', []):
+            for change in entry.get('changes', []):
+                messages = change.get('value', {}).get('messages', [])
+                # Filtrar mensajes que contienen la propiedad 'text'
+                for message in messages:
+                    if 'text' in message:
+                        objetos_con_text.append(message)
+    
+    return objetos_con_text
+
+
 @app.route('/')
 def index():
     return ""
@@ -25,8 +42,6 @@ def verificar_token():
         return challenge
     else:
         return jsonify({'error': 'Token Inválido'}), 401
-
-
 
 @app.route('/get-mensajes', methods=['GET'])
 def get_mensajesbyjson():
@@ -49,7 +64,6 @@ def get_mensajesbyjson():
         # Manejo de errores durante la lectura del archivo
         print("Error al leer el archivo JSON:", e)
         return {"error": "Error al leer el archivo JSON."}
-
 
 
 @app.route('/eliminar-mensajes', methods=['POST'])
@@ -105,7 +119,6 @@ def eliminar_json_whatsapp_api():
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
     
 
-
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
     try:
@@ -126,14 +139,19 @@ def recibir_mensajes():
             json_data = []
 
         # Añadir los nuevos datos recibidos al array de objetos JSON
-        json_data.append(data)
 
-        # Guardar los datos actualizados en el archivo JSON
-        with open(json_file, 'w') as file:
-            json.dump(json_data, file, indent=4)
+        data_filtrada=filtrar_por_propiedad_text(data)
 
-        # Retornar una respuesta exitosa
-        return jsonify({'status': 'Datos recibidos correctamente'}), 200
+        if data_filtrada != []:
+
+            json_data.append(data)
+
+            # Guardar los datos actualizados en el archivo JSON
+            with open(json_file, 'w') as file:
+                json.dump(json_data, file, indent=4)
+
+            # Retornar una respuesta exitosa
+            return jsonify({'status': 'Datos recibidos correctamente'}), 200
 
     except Exception as e:
         print("Error en el procesamiento del mensaje:", e)
