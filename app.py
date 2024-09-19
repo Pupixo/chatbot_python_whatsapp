@@ -98,7 +98,8 @@ def eliminar_json_whatsapp_api():
         # Manejo de errores durante la lectura o escritura del archivo
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
-
+    
+    
 
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
