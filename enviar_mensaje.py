@@ -9,7 +9,7 @@ from conexionbd import guardar_imagen_en_db
 
 
 PAGE_ID = "323605944180431"
-ACCESS_TOKEN = "EAARZA5UhHwCUBO1mNzZAL0IOSlZBpOgJ6mMNHZAa5JzSW0pgxYCkkvMw19NvDZBJrbZB2spf4MsXoj0jBIxmc7iVCB667Y2IiHacxX97Jwlr6oJFZAVE8CZC5Qix0Y2YlkyJvJhReuF45Dyn9ZBYZAvth1wVVAkVjlKMVItI9WIxmCjG3oj27fflfWrrhj7b6epK8ZAu362ygZAPCIO3Dk18tmaGgfLA3hYGRXIkms3Rha3PSm0ZD"
+ACCESS_TOKEN = "EAAOcMhFbbo0BO1Uv6HFNWH0FvRPrT7qOK7ZBXBblL07GnDDZC3HCCHFi6rG5ZCIo4H6sRebptxsTKhB6LvAp68aEbsdgqbxjYDUPYgLh4DF9dZAljLZA51hh0ZC7rfrcqvTfwZAcA7JKTSariw8viAb3VDuszH5RCls09drhsm3Q2xkT0MAHllHoGjUZBUMrglxiOjmCiAEBkZBJ2ZAvHs6MawyNWgWIhNLkslUm7anoJadO0ZD"
 
 
 def enviar_mensaje_lista(numero, lista_de_gerencia, titulo, mensaje_completo):
@@ -54,6 +54,8 @@ def enviar_mensaje_texto(numero, mensaje_texto):
         }
     }
     enviar_mensaje(responder_mensaje)
+
+    
 
 def enviar_mensaje(mensaje):
     conn = http.client.HTTPSConnection("graph.facebook.com")
@@ -177,3 +179,8 @@ def enviar_template(numero, mensaje_texto):
         ]
     }
     })
+
+
+
+
+
