@@ -21,8 +21,10 @@ def filtrar_por_propiedad_text(data):
         for entry in obj.get('entry', []):
             for change in entry.get('changes', []):
                 messages = change.get('value', {}).get('messages', [])
+                print("messages",messages)
                 # Filtrar mensajes que contienen la propiedad 'text'
                 for message in messages:
+                    print("text",message)
                     if 'text' in message:
                         objetos_con_text.append(message)
     
@@ -142,14 +144,11 @@ def recibir_mensajes():
 
         data_filtrada=filtrar_por_propiedad_text(data)
         print("data_filtrada..............",data_filtrada)
-        if data_filtrada != []:
-
+        if len(data_filtrada) != 0:
             json_data.append(data)
-
             # Guardar los datos actualizados en el archivo JSON
             with open(json_file, 'w') as file:
                 json.dump(json_data, file, indent=4)
-
             # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos correctamente'}), 200
 
