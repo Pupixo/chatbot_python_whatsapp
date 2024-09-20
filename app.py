@@ -120,17 +120,14 @@ def eliminar_json_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
     
-
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
     try:
         # Obtener los datos del POST request
         data = request.get_json()
         print("Datos recibidos:", data)
-
         # Definir el nombre del archivo JSON
         json_file = 'data.json'
-
         # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
         if os.path.exists(json_file):
             with open(json_file, 'r') as file:
@@ -139,9 +136,8 @@ def recibir_mensajes():
                     json_data = []
         else:
             json_data = []
-
+        data = json.loads(data)
         # Añadir los nuevos datos recibidos al array de objetos JSON
-
         data_filtrada=filtrar_por_propiedad_text(data)
         print("data_filtrada..............",data_filtrada)
         if len(data_filtrada) != 0:
@@ -151,13 +147,9 @@ def recibir_mensajes():
                 json.dump(json_data, file, indent=4)
             # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos correctamente'}), 200
-
     except Exception as e:
         print("Error en el procesamiento del mensaje:", e)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
-
-
-
 
 
 if __name__ == '__main__':
