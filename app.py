@@ -14,15 +14,13 @@ estado_usuario = {}
 
 
 def filtrar_por_propiedad_text(data):
-    
-    # Validar si existe la clave 'messages'
+    # Validar si existe la clave 'messages' dentro de 'value'
     messages = data['entry'][0]['changes'][0]['value'].get('messages')
     
     # Verificar si hay mensajes
     if messages:
-        print("Mensaje filtrado:", messages)
-        return messages
-
+        print("Mensaje filtrado:", data)  # Retorna todo el JSON
+        return data
     else:
         print("No hay mensajes")
         return None
@@ -123,8 +121,10 @@ def recibir_mensajes():
         # Obtener los datos del POST request
         data = request.get_json()
         print("Datos recibidos:", data)
+
         # Definir el nombre del archivo JSON
         json_file = 'data.json'
+
         # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
         if os.path.exists(json_file):
             with open(json_file, 'r') as file:
@@ -133,22 +133,28 @@ def recibir_mensajes():
                     json_data = []
         else:
             json_data = []
-        # Añadir los nuevos datos recibidos al array de objetos JSON
-        data_filtrada=filtrar_por_propiedad_text(data)
-        print("data_filtrada..............",data_filtrada)
 
-        if len(data_filtrada) != None:
-            json_data.append(data)
+        # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
+        data_filtrada = filtrar_por_propiedad_text(data)
+        print("Datos filtrados:", data_filtrada)
+
+        # Verificar si data_filtrada no es None y tiene contenido
+        if data_filtrada is not None:
+            json_data.append(data_filtrada)  # Guardamos solo los datos filtrados
+
             # Guardar los datos actualizados en el archivo JSON
             with open(json_file, 'w') as file:
                 json.dump(json_data, file, indent=4)
+
             # Retornar una respuesta exitosa
-            return jsonify({'status': 'Datos recibidos correctamente'}), 200
-        
+            return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
+        else:
+            # Retornar una respuesta indicando que no hay mensajes
+            return jsonify({'status': 'No hay mensajes para guardar'}), 200
+
     except Exception as e:
         print("Error en el procesamiento del mensaje:", e)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
