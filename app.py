@@ -18,7 +18,10 @@ def filtrar_por_propiedad_text(data):
     objetos_con_text = []
     
     for obj in data:
-        for entry in obj.get('entry', []):
+        print("obj...............",obj)
+        json_obj = json.load(obj)
+        print("json_obj...............",json_obj)
+        for entry in json_obj.get('entry', []):
             for change in entry.get('changes', []):
                 messages = change.get('value', {}).get('messages', [])
                 print("messages",messages)
