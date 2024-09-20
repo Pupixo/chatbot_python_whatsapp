@@ -82,21 +82,21 @@ def eliminar_json_whatsapp_api():
                 print("isinstance")
 
                 nuevos_datos = [
-                    entry for entry in json_data 
-                    if entry.get('entry', [{}])[0].get('id') != id_eliminar
-                ]
+                                entry for entry in json_data 
+                                if all(
+                                    message.get('id') != id_eliminar
+                                    for change in entry.get('entry', [{}])[0].get('changes', [{}])
+                                    for message in change.get('value', {}).get('messages', [])
+                                )
+                            ]
+            
                 print("nuevos_datos",nuevos_datos)
 
-
-                # Filtrar los mensajes cuyo 'id' no coincida con id_eliminar
-                # nuevos_datos = [entry for entry in json_data if entry.get('entry', [{}])[0].get('id') != id_eliminar]
-                # print("nuevos_datos",nuevos_datos)
                 print("len  nuevos_datos",len(nuevos_datos))
                 print("len  json_data",len(json_data))
 
                 # Guardar los datos actualizados en el archivo JSON solo si hubo cambios
                 if len(nuevos_datos) < len(json_data):
-
                     with open(json_file, 'w') as file:
                         json.dump(nuevos_datos, file, indent=4)
                     print("Mensaje eliminado correctamente")
