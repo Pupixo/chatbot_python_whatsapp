@@ -14,7 +14,6 @@ estado_usuario = {}
 
 
 def filtrar_por_propiedad_text(data):
-    objetos_con_text = []
     
     # Validar si existe la clave 'messages'
     messages = data['entry'][0]['changes'][0]['value'].get('messages', [])
@@ -22,10 +21,11 @@ def filtrar_por_propiedad_text(data):
     # Verificar si hay mensajes
     if messages:
         print("Mensaje filtrado:", messages)
+        return messages
+
     else:
         print("No hay mensajes")
-    
-    return objetos_con_text
+        return None
 
 
 @app.route('/')
@@ -136,7 +136,8 @@ def recibir_mensajes():
         # Añadir los nuevos datos recibidos al array de objetos JSON
         data_filtrada=filtrar_por_propiedad_text(data)
         print("data_filtrada..............",data_filtrada)
-        if len(data_filtrada) != 0:
+        
+        if len(data_filtrada) != None:
             json_data.append(data)
             # Guardar los datos actualizados en el archivo JSON
             with open(json_file, 'w') as file:
