@@ -141,7 +141,7 @@ def recibir_mensajes():
         # Añadir los nuevos datos recibidos al array de objetos JSON
 
         data_filtrada=filtrar_por_propiedad_text(data)
-
+        print("data_filtrada..............",data_filtrada)
         if data_filtrada != []:
 
             json_data.append(data)
