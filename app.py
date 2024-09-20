@@ -13,23 +13,17 @@ mensajes_procesados = set()
 estado_usuario = {}
 
 
-# colocar en su propio archivo luego
 def filtrar_por_propiedad_text(data):
     objetos_con_text = []
     
-    for obj in data:
-        print("obj...............",obj)
-        json_obj = json.load(obj)
-        print("json_obj...............",json_obj)
-        for entry in json_obj.get('entry', []):
-            for change in entry.get('changes', []):
-                messages = change.get('value', {}).get('messages', [])
-                print("messages",messages)
-                # Filtrar mensajes que contienen la propiedad 'text'
-                for message in messages:
-                    print("text",message)
-                    if 'text' in message:
-                        objetos_con_text.append(message)
+    # Validar si existe la clave 'messages'
+    messages = data['entry'][0]['changes'][0]['value'].get('messages', [])
+    
+    # Verificar si hay mensajes
+    if messages:
+        print("Mensaje filtrado:", messages)
+    else:
+        print("No hay mensajes")
     
     return objetos_con_text
 
@@ -149,6 +143,7 @@ def recibir_mensajes():
                 json.dump(json_data, file, indent=4)
             # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos correctamente'}), 200
+        
     except Exception as e:
         print("Error en el procesamiento del mensaje:", e)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
