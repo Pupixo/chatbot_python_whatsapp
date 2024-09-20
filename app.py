@@ -81,15 +81,28 @@ def eliminar_json_whatsapp_api():
             if isinstance(json_data, list):
                 print("isinstance")
 
+                nuevos_datos = [
+                    entry for entry in json_data 
+                    if entry.get('entry', [{}])[0].get('id') != id_eliminar
+                ]
+                print("nuevos_datos",nuevos_datos)
+
+
                 # Filtrar los mensajes cuyo 'id' no coincida con id_eliminar
-                nuevos_datos = [entry for entry in json_data if entry.get('entry', [{}])[0].get('id') != id_eliminar]
+                # nuevos_datos = [entry for entry in json_data if entry.get('entry', [{}])[0].get('id') != id_eliminar]
+                # print("nuevos_datos",nuevos_datos)
+                print("len  nuevos_datos",len(nuevos_datos))
+                print("len  json_data",len(json_data))
 
                 # Guardar los datos actualizados en el archivo JSON solo si hubo cambios
                 if len(nuevos_datos) < len(json_data):
+
                     with open(json_file, 'w') as file:
                         json.dump(nuevos_datos, file, indent=4)
+                    print("Mensaje eliminado correctamente")
                     return jsonify({'status': 'Mensaje eliminado correctamente'}), 200
                 else:
+                    print("No se encontró un mensaje con ese ID")
                     return jsonify({'status': 'No se encontró un mensaje con ese ID'}), 404
             else:
                 print("no isinstance")
@@ -107,7 +120,6 @@ def recibir_mensajes():
     try:
         # Obtener los datos del POST request
         data = request.get_json()
-        print("Datos recibidos:", data)
 
         # Definir el nombre del archivo JSON
         json_file = 'data.json'
@@ -123,7 +135,7 @@ def recibir_mensajes():
 
         # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
         messages = data['entry'][0]['changes'][0]['value'].get('messages')
-            
+        print("messages",messages)
         # Verificar si hay mensajes
         if messages:
             json_data.append(data)  # Guardamos solo los datos filtrados
