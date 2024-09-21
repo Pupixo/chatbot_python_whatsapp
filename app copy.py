@@ -15,7 +15,6 @@ app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
 mensajes_procesados = set()
-estado_usuario = {}
 
 @app.route('/')
 def index():

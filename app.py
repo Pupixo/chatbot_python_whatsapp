@@ -91,7 +91,6 @@ def eliminar_json_whatsapp_api():
                             ]
             
                 print("nuevos_datos",nuevos_datos)
-
                 print("len  nuevos_datos",len(nuevos_datos))
                 print("len  json_data",len(json_data))
 
