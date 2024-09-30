@@ -221,33 +221,34 @@ def recibir_mensajes():
         logging.info(f"Mensajes recibidos: {messages}")
 
         # Verificar si hay mensajes
-        if messages:
-            # Obtener el número del remitente
-            numero = messages.get("from", "")
-            if not numero:
-                return jsonify({'error': 'No se encontró el número del remitente'}), 400
+        if messages and isinstance(messages, list):  # Verificamos que sea una lista
+            for message in messages:
+                # Obtener el número del remitente de cada mensaje
+                numero = message.get("from", "")
+                if not numero:
+                    return jsonify({'error': 'No se encontró el número del remitente'}), 400
 
-            # Definir el nombre del archivo JSON
-            json_file = Path(f'usuario_{numero}.json')
+                # Definir el nombre del archivo JSON
+                json_file = Path(f'usuario_{numero}.json')
 
-            # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
-            if json_file.exists():
-                with json_file.open('r') as file:
-                    try:
-                        json_data = json.load(file)
-                        if not isinstance(json_data, list):  # Verificar si es un array
+                # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
+                if json_file.exists():
+                    with json_file.open('r') as file:
+                        try:
+                            json_data = json.load(file)
+                            if not isinstance(json_data, list):  # Verificar si es un array
+                                json_data = []
+                        except json.JSONDecodeError:
                             json_data = []
-                    except json.JSONDecodeError:
-                        json_data = []
-            else:
-                json_data = []
+                else:
+                    json_data = []
 
-            # Agregar los nuevos datos al archivo JSON
-            json_data.append(data)
+                # Agregar los nuevos datos al archivo JSON
+                json_data.append(data)
 
-            # Guardar los datos actualizados en el archivo JSON
-            with json_file.open('w') as file:
-                json.dump(json_data, file, indent=4)
+                # Guardar los datos actualizados en el archivo JSON
+                with json_file.open('w') as file:
+                    json.dump(json_data, file, indent=4)
 
             # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
@@ -260,8 +261,6 @@ def recibir_mensajes():
     except Exception as e:
         logging.error(f"Error en el procesamiento del mensaje: {e}")
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
-
-
 
 
 if __name__ == '__main__':
