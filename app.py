@@ -5,6 +5,9 @@ import re
 import random
 import string
 import os
+from pathlib import Path
+import logging
+
 
 app = Flask(__name__)
 
@@ -63,7 +66,6 @@ def verificar_token():
 @app.route('/get-mensajes/<number>', methods=['GET'])  # Utilizamos el número como parámetro en la URL
 def get_mensajesbyjson(number):
     # Verificar si el número es válido
-
     print("number...............",number)
     if not number.isdigit():
         return jsonify({"error": "El parámetro 'number' debe ser un número válido."}), 400
@@ -160,40 +162,107 @@ def eliminar_json_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
     
+# @app.route('/webhook', methods=['POST'])
+# def recibir_mensajes():
+#     try:
+#         # Obtener los datos del POST request
+#         data = request.get_json()
+#         # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
+#         messages = data['entry'][0]['changes'][0]['value'].get('messages')
+#         print("messages......................",messages)
+#         # Verificar si hay mensajes
+#         json_data = []
+#         if messages:               
+#             numero = messages.get("from", "")
+#             # Definir el nombre del archivo JSON
+#             json_file = f'usuario_{numero}.json'
+#             # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
+#             if os.path.exists(json_file):
+#                 with open(json_file, 'r') as file:
+#                     json_data = json.load(file)
+#                     if not isinstance(json_data, list):  # Verificar si es un array
+#                         json_data = []
+#             else:
+#                 json_data = []
+#             json_data.append(data)  # Guardamos solo los datos filtrados
+#             # Guardar los datos actualizados en el archivo JSON
+#             with open(json_file, 'w') as file:
+#                 json.dump(json_data, file, indent=4)
+#             # Retornar una respuesta exitosa
+#             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
+#         else:
+#             # Retornar una respuesta indicando que no hay mensajes
+#             return jsonify({'status': 'No hay mensajes para guardar'}), 200
+#     except Exception as e:
+#         print("Error en el procesamiento del mensaje:", e)
+#         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
     try:
         # Obtener los datos del POST request
         data = request.get_json()
-        # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
-        messages = data['entry'][0]['changes'][0]['value'].get('messages')
-        print("messages......................",messages)
+        
+        # Verificar la estructura de los datos
+        entry = data.get('entry')
+        if not entry:
+            return jsonify({'error': 'Estructura de datos inválida, falta el campo "entry"'}), 400
+        
+        changes = entry[0].get('changes')
+        if not changes:
+            return jsonify({'error': 'Estructura de datos inválida, falta el campo "changes"'}), 400
+
+        value = changes[0].get('value')
+        if not value:
+            return jsonify({'error': 'Estructura de datos inválida, falta el campo "value"'}), 400
+        
+        messages = value.get('messages')
+        logging.info(f"Mensajes recibidos: {messages}")
+
         # Verificar si hay mensajes
-        json_data = []
-        if messages:               
+        if messages:
+            # Obtener el número del remitente
             numero = messages.get("from", "")
+            if not numero:
+                return jsonify({'error': 'No se encontró el número del remitente'}), 400
+
             # Definir el nombre del archivo JSON
-            json_file = f'usuario_{numero}.json'
+            json_file = Path(f'usuario_{numero}.json')
+
             # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
-            if os.path.exists(json_file):
-                with open(json_file, 'r') as file:
-                    json_data = json.load(file)
-                    if not isinstance(json_data, list):  # Verificar si es un array
+            if json_file.exists():
+                with json_file.open('r') as file:
+                    try:
+                        json_data = json.load(file)
+                        if not isinstance(json_data, list):  # Verificar si es un array
+                            json_data = []
+                    except json.JSONDecodeError:
                         json_data = []
             else:
                 json_data = []
-            json_data.append(data)  # Guardamos solo los datos filtrados
+
+            # Agregar los nuevos datos al archivo JSON
+            json_data.append(data)
+
             # Guardar los datos actualizados en el archivo JSON
-            with open(json_file, 'w') as file:
+            with json_file.open('w') as file:
                 json.dump(json_data, file, indent=4)
+
             # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
         else:
             # Retornar una respuesta indicando que no hay mensajes
             return jsonify({'status': 'No hay mensajes para guardar'}), 200
+    except KeyError as ke:
+        logging.error(f"Error de clave en los datos recibidos: {ke}")
+        return jsonify({'error': f'Error de clave en los datos recibidos: {ke}'}), 400
     except Exception as e:
-        print("Error en el procesamiento del mensaje:", e)
+        logging.error(f"Error en el procesamiento del mensaje: {e}")
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
