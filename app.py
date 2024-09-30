@@ -63,6 +63,8 @@ def verificar_token():
 @app.route('/get-mensajes/<number>', methods=['GET'])  # Utilizamos el número como parámetro en la URL
 def get_mensajesbyjson(number):
     # Verificar si el número es válido
+
+    print("number...............",number)
     if not number.isdigit():
         return jsonify({"error": "El parámetro 'number' debe ser un número válido."}), 400
 
@@ -167,6 +169,7 @@ def recibir_mensajes():
         messages = data['entry'][0]['changes'][0]['value'].get('messages')
         print("messages......................",messages)
         # Verificar si hay mensajes
+        json_data = []
         if messages:               
             numero = messages.get("from", "")
             # Definir el nombre del archivo JSON
@@ -179,8 +182,6 @@ def recibir_mensajes():
                         json_data = []
             else:
                 json_data = []
-
-
             json_data.append(data)  # Guardamos solo los datos filtrados
             # Guardar los datos actualizados en el archivo JSON
             with open(json_file, 'w') as file:
