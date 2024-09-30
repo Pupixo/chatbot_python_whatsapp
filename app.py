@@ -29,17 +29,45 @@ def verificar_token():
 
 
 
-@app.route('/get-mensajes', methods=['GET'])
-def get_mensajesbyjson():
-    # Obtener el parámetro 'number' de la solicitud GET
-    numero = request.args.get('number', default=None, type=int)
+# @app.route('/get-mensajes', methods=['GET'])
+# def get_mensajesbyjson():
+#     # Obtener el parámetro 'number' de la solicitud GET
+#     numero = request.args.get('number', default=None, type=int)
 
-    # Verificar si se ha proporcionado un número válido
-    if numero is None:
-        return jsonify({"error": "El parámetro 'number' es obligatorio."})
+#     # Verificar si se ha proporcionado un número válido
+#     if numero is None:
+#         return jsonify({"error": "El parámetro 'number' es obligatorio."})
+
+#     # Definir el nombre del archivo JSON basado en el número
+#     json_file = f'usuario_{numero}.json'
+
+#     try:
+#         # Verificar si el archivo existe
+#         if os.path.exists(json_file):
+#             # Abrir el archivo JSON en modo lectura
+#             with open(json_file, 'r') as file:
+#                 # Cargar y retornar los datos contenidos en el archivo
+#                 json_data = json.load(file)
+#                 return jsonify(json_data)
+#         else:
+#             # Si el archivo no existe, retornar un mensaje apropiado
+#             return jsonify({"error": "El archivo no existe."})
+
+#     except Exception as e:
+#         # Manejo de errores durante la lectura del archivo
+#         print("Error al leer el archivo JSON:", e)
+#         return jsonify({"error": "Error al leer el archivo JSON."})
+    
+
+
+@app.route('/get-mensajes/<number>', methods=['GET'])  # Utilizamos el número como parámetro en la URL
+def get_mensajesbyjson(number):
+    # Verificar si el número es válido
+    if not number.isdigit():
+        return jsonify({"error": "El parámetro 'number' debe ser un número válido."}), 400
 
     # Definir el nombre del archivo JSON basado en el número
-    json_file = f'usuario_{numero}.json'
+    json_file = f'usuario_{number}.json'
 
     try:
         # Verificar si el archivo existe
@@ -51,14 +79,12 @@ def get_mensajesbyjson():
                 return jsonify(json_data)
         else:
             # Si el archivo no existe, retornar un mensaje apropiado
-            return jsonify({"error": "El archivo no existe."})
+            return jsonify({"error": "El archivo no existe."}), 404
 
     except Exception as e:
         # Manejo de errores durante la lectura del archivo
         print("Error al leer el archivo JSON:", e)
-        return jsonify({"error": "Error al leer el archivo JSON."})
-    
-
+        return jsonify({"error": "Error al leer el archivo JSON."}), 500
 
 
 @app.route('/eliminar-mensajes', methods=['POST'])
