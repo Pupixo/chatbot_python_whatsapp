@@ -27,10 +27,19 @@ def verificar_token():
     else:
         return jsonify({'error': 'Token Inválido'}), 401
 
+
+
 @app.route('/get-mensajes', methods=['GET'])
 def get_mensajesbyjson():
-    # Definir el nombre del archivo JSON
-    json_file = 'data.json'
+    # Obtener el parámetro 'number' de la solicitud GET
+    numero = request.args.get('number', default=None, type=int)
+
+    # Verificar si se ha proporcionado un número válido
+    if numero is None:
+        return jsonify({"error": "El parámetro 'number' es obligatorio."})
+
+    # Definir el nombre del archivo JSON basado en el número
+    json_file = f'usuario_{numero}.json'
 
     try:
         # Verificar si el archivo existe
@@ -39,15 +48,17 @@ def get_mensajesbyjson():
             with open(json_file, 'r') as file:
                 # Cargar y retornar los datos contenidos en el archivo
                 json_data = json.load(file)
-                return json_data
+                return jsonify(json_data)
         else:
             # Si el archivo no existe, retornar un mensaje apropiado
-            return {"error": "El archivo no existe."}
+            return jsonify({"error": "El archivo no existe."})
 
     except Exception as e:
         # Manejo de errores durante la lectura del archivo
         print("Error al leer el archivo JSON:", e)
-        return {"error": "Error al leer el archivo JSON."}
+        return jsonify({"error": "Error al leer el archivo JSON."})
+    
+
 
 
 @app.route('/eliminar-mensajes', methods=['POST'])
@@ -63,8 +74,15 @@ def eliminar_json_whatsapp_api():
         id_eliminar = data['id']
         print("ID a eliminar:", id_eliminar)
 
+        # Validar que el JSON contenga el campo 'id'
+        if not data or 'numero' not in data:
+            return jsonify({'error': 'No se proporcionó un numero de usuario válido para eliminar'}), 400
+     
+        numero = data['numero']
+        print("numero a eliminar:", numero)  
+
         # Definir el nombre del archivo JSON
-        json_file = 'data.json'
+        json_file = f'usuario_{numero}.json'
 
         # Verificar si el archivo existe
         if os.path.exists(json_file):
@@ -91,7 +109,6 @@ def eliminar_json_whatsapp_api():
                             ]
             
                 print("nuevos_datos",nuevos_datos)
-
                 print("len  nuevos_datos",len(nuevos_datos))
                 print("len  json_data",len(json_data))
 
@@ -120,24 +137,24 @@ def recibir_mensajes():
     try:
         # Obtener los datos del POST request
         data = request.get_json()
-
-        # Definir el nombre del archivo JSON
-        json_file = 'data.json'
-
-        # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
-        if os.path.exists(json_file):
-            with open(json_file, 'r') as file:
-                json_data = json.load(file)
-                if not isinstance(json_data, list):  # Verificar si es un array
-                    json_data = []
-        else:
-            json_data = []
-
         # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
         messages = data['entry'][0]['changes'][0]['value'].get('messages')
-        print("messages",messages)
+        print("messages......................",messages)
         # Verificar si hay mensajes
-        if messages:
+        if messages:               
+            numero = messages.get("from", "")
+            # Definir el nombre del archivo JSON
+            json_file = f'usuario_{numero}.json'
+            # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
+            if os.path.exists(json_file):
+                with open(json_file, 'r') as file:
+                    json_data = json.load(file)
+                    if not isinstance(json_data, list):  # Verificar si es un array
+                        json_data = []
+            else:
+                json_data = []
+
+
             json_data.append(data)  # Guardamos solo los datos filtrados
             # Guardar los datos actualizados en el archivo JSON
             with open(json_file, 'w') as file:
