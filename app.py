@@ -129,12 +129,15 @@ def eliminar_json_whatsapp_api():
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
 
-
 @app.route('/listar-jsons-usu', methods=['GET'])
 def obtener_nombres_todos_los_jsons():
     try:
         # Carpeta donde se almacenan los archivos JSON
         folder = 'usu_numbers'
+
+        # Verificar si la carpeta existe
+        if not os.path.exists(folder):
+            return jsonify({'usuarios': []})
 
         # Obtener la lista de archivos en la carpeta
         files = os.listdir(folder)
@@ -142,10 +145,14 @@ def obtener_nombres_todos_los_jsons():
         # Filtrar los archivos con extensión .json y que comiencen con 'usuario_'
         files_jsons = [f for f in files if f.endswith('.json') and f.startswith('usuario_')]
 
+        # Si no hay archivos que cumplan el criterio, retornar lista vacía
+        if not files_jsons:
+            return jsonify({'usuarios': []})
+
         # Extraer el número de usuario de los nombres de archivo (lo que está después del '_')
         usuarios = [f.split('_')[1].replace('.json', '') for f in files_jsons]
 
-        # Obtener la fecha de última modificación de cada archivo y ordenar
+        # Ordenar los archivos por fecha de última modificación (si fuera necesario)
         files_jsons.sort(key=lambda f: os.path.getmtime(os.path.join(folder, f)), reverse=True)
 
         # Retornar la lista de números de usuario en formato JSON
@@ -155,7 +162,6 @@ def obtener_nombres_todos_los_jsons():
         # Manejo de errores durante la lectura de los archivos
         print("Error al obtener los nombres de los archivos json y listarlos:", e)
         return jsonify({'error': f'Error al obtener los nombres de los archivos json y listarlos: {str(e)}'}), 500
-
 
 
 @app.route('/webhook', methods=['POST'])
