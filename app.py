@@ -30,39 +30,6 @@ def verificar_token():
     else:
         return jsonify({'error': 'Token Inválido'}), 401
 
-
-
-# @app.route('/get-mensajes', methods=['GET'])
-# def get_mensajesbyjson():
-#     # Obtener el parámetro 'number' de la solicitud GET
-#     numero = request.args.get('number', default=None, type=int)
-
-#     # Verificar si se ha proporcionado un número válido
-#     if numero is None:
-#         return jsonify({"error": "El parámetro 'number' es obligatorio."})
-
-#     # Definir el nombre del archivo JSON basado en el número
-#     json_file = f'usuario_{numero}.json'
-
-#     try:
-#         # Verificar si el archivo existe
-#         if os.path.exists(json_file):
-#             # Abrir el archivo JSON en modo lectura
-#             with open(json_file, 'r') as file:
-#                 # Cargar y retornar los datos contenidos en el archivo
-#                 json_data = json.load(file)
-#                 return jsonify(json_data)
-#         else:
-#             # Si el archivo no existe, retornar un mensaje apropiado
-#             return jsonify({"error": "El archivo no existe."})
-
-#     except Exception as e:
-#         # Manejo de errores durante la lectura del archivo
-#         print("Error al leer el archivo JSON:", e)
-#         return jsonify({"error": "Error al leer el archivo JSON."})
-    
-
-
 @app.route('/get-mensajes/<number>', methods=['GET'])  # Utilizamos el número como parámetro en la URL
 def get_mensajesbyjson(number):
     # Verificar si el número es válido
@@ -71,7 +38,7 @@ def get_mensajesbyjson(number):
         return jsonify({"error": "El parámetro 'number' debe ser un número válido."}), 400
 
     # Definir el nombre del archivo JSON basado en el número
-    json_file = f'usuario_{number}.json'
+    json_file = f'usu_numbers/usuario_{number}.json'
 
     try:
         # Verificar si el archivo existe
@@ -89,7 +56,6 @@ def get_mensajesbyjson(number):
         # Manejo de errores durante la lectura del archivo
         print("Error al leer el archivo JSON:", e)
         return jsonify({"error": "Error al leer el archivo JSON."}), 500
-
 
 @app.route('/eliminar-mensajes', methods=['POST'])
 def eliminar_json_whatsapp_api():
@@ -112,7 +78,7 @@ def eliminar_json_whatsapp_api():
         print("numero a eliminar:", numero)  
 
         # Definir el nombre del archivo JSON
-        json_file = f'usuario_{numero}.json'
+        json_file = f'usu_numbers/usuario_{numero}.json'
 
         # Verificar si el archivo existe
         if os.path.exists(json_file):
@@ -161,41 +127,35 @@ def eliminar_json_whatsapp_api():
         # Manejo de errores durante la lectura o escritura del archivo
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
-    
-# @app.route('/webhook', methods=['POST'])
-# def recibir_mensajes():
-#     try:
-#         # Obtener los datos del POST request
-#         data = request.get_json()
-#         # Filtrar los datos recibidos usando la función filtrar_por_propiedad_text
-#         messages = data['entry'][0]['changes'][0]['value'].get('messages')
-#         print("messages......................",messages)
-#         # Verificar si hay mensajes
-#         json_data = []
-#         if messages:               
-#             numero = messages.get("from", "")
-#             # Definir el nombre del archivo JSON
-#             json_file = f'usuario_{numero}.json'
-#             # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
-#             if os.path.exists(json_file):
-#                 with open(json_file, 'r') as file:
-#                     json_data = json.load(file)
-#                     if not isinstance(json_data, list):  # Verificar si es un array
-#                         json_data = []
-#             else:
-#                 json_data = []
-#             json_data.append(data)  # Guardamos solo los datos filtrados
-#             # Guardar los datos actualizados en el archivo JSON
-#             with open(json_file, 'w') as file:
-#                 json.dump(json_data, file, indent=4)
-#             # Retornar una respuesta exitosa
-#             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
-#         else:
-#             # Retornar una respuesta indicando que no hay mensajes
-#             return jsonify({'status': 'No hay mensajes para guardar'}), 200
-#     except Exception as e:
-#         print("Error en el procesamiento del mensaje:", e)
-#         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+
+
+@app.route('/listar-jsons-usu', methods=['GET'])
+def obtener_nombres_todos_los_jsons():
+    try:
+        # Carpeta donde se almacenan los archivos JSON
+        folder = 'usu_numbers'
+
+        # Obtener la lista de archivos en la carpeta
+        files = os.listdir(folder)
+
+        # Filtrar los archivos con extensión .json y que comiencen con 'usuario_'
+        files_jsons = [f for f in files if f.endswith('.json') and f.startswith('usuario_')]
+
+        # Extraer el número de usuario de los nombres de archivo (lo que está después del '_')
+        usuarios = [f.split('_')[1].replace('.json', '') for f in files_jsons]
+
+        # Obtener la fecha de última modificación de cada archivo y ordenar
+        files_jsons.sort(key=lambda f: os.path.getmtime(os.path.join(folder, f)), reverse=True)
+
+        # Retornar la lista de números de usuario en formato JSON
+        return jsonify({'usuarios': usuarios})
+
+    except Exception as e:
+        # Manejo de errores durante la lectura de los archivos
+        print("Error al obtener los nombres de los archivos json y listarlos:", e)
+        return jsonify({'error': f'Error al obtener los nombres de los archivos json y listarlos: {str(e)}'}), 500
+
 
 
 @app.route('/webhook', methods=['POST'])
@@ -229,7 +189,7 @@ def recibir_mensajes():
                     return jsonify({'error': 'No se encontró el número del remitente'}), 400
 
                 # Definir el nombre del archivo JSON
-                json_file = Path(f'usuario_{numero}.json')
+                json_file = Path(f'usu_numbers/usuario_{numero}.json')
 
                 # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
                 if json_file.exists():
