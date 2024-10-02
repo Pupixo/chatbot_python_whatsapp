@@ -128,7 +128,6 @@ def eliminar_json_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
-
 @app.route('/listar-jsons-usu', methods=['GET'])
 def obtener_nombres_todos_los_jsons():
     try:
@@ -192,9 +191,10 @@ def recibir_mensajes():
                 if not numero:
                     return jsonify({'error': 'No se encontró el número del remitente'}), 400
 
-                json_file = Path(f'usu_numbers/usuario_{numero}.json')
+                json_file = f'usu_numbers/usuario_{numero}.json'
 
-                if json_file.exists():
+                if os.path.exists(json_file):
+                # if json_file.exists():
                     with json_file.open('r') as file:
                         try:
                             json_data = json.load(file)
