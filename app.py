@@ -167,14 +167,14 @@ def obtener_nombres_todos_los_jsons():
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
     try:
-        # Obtener los datos del POST request
         data = request.get_json()
-        
-        # Verificar la estructura de los datos
+        if data is None:
+            return jsonify({'error': 'No se recibieron datos JSON válidos'}), 400
+
         entry = data.get('entry')
         if not entry:
             return jsonify({'error': 'Estructura de datos inválida, falta el campo "entry"'}), 400
-        
+
         changes = entry[0].get('changes')
         if not changes:
             return jsonify({'error': 'Estructura de datos inválida, falta el campo "changes"'}), 400
@@ -182,51 +182,51 @@ def recibir_mensajes():
         value = changes[0].get('value')
         if not value:
             return jsonify({'error': 'Estructura de datos inválida, falta el campo "value"'}), 400
-        
+
         messages = value.get('messages')
         logging.info(f"Mensajes recibidos: {messages}")
 
-        # Verificar si hay mensajes
-        if messages and isinstance(messages, list):  # Verificamos que sea una lista
+        if isinstance(messages, list) and messages:  # Verificamos que sea una lista no vacía
             for message in messages:
-                # Obtener el número del remitente de cada mensaje
                 numero = message.get("from", "")
                 if not numero:
                     return jsonify({'error': 'No se encontró el número del remitente'}), 400
 
-                # Definir el nombre del archivo JSON
                 json_file = Path(f'usu_numbers/usuario_{numero}.json')
 
-                # Si el archivo existe, lo cargamos, si no, creamos una lista vacía
                 if json_file.exists():
                     with json_file.open('r') as file:
                         try:
                             json_data = json.load(file)
-                            if not isinstance(json_data, list):  # Verificar si es un array
+                            if not isinstance(json_data, list):
                                 json_data = []
                         except json.JSONDecodeError:
                             json_data = []
                 else:
                     json_data = []
 
-                # Agregar los nuevos datos al archivo JSON
                 json_data.append(data)
 
-                # Guardar los datos actualizados en el archivo JSON
+                # Verificar permisos de escritura y existencia del directorio
+                if not os.path.exists('usu_numbers'):
+                    os.makedirs('usu_numbers')
+
                 with json_file.open('w') as file:
                     json.dump(json_data, file, indent=4)
 
-            # Retornar una respuesta exitosa
             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
         else:
-            # Retornar una respuesta indicando que no hay mensajes
             return jsonify({'status': 'No hay mensajes para guardar'}), 200
     except KeyError as ke:
-        logging.error(f"Error de clave en los datos recibidos: {ke}")
+        logging.error(f"Error de clave en los datos recibidos: {ke}", exc_info=True)
         return jsonify({'error': f'Error de clave en los datos recibidos: {ke}'}), 400
     except Exception as e:
-        logging.error(f"Error en el procesamiento del mensaje: {e}")
+        logging.error(f"Error en el procesamiento del mensaje: {e}", exc_info=True)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+
+
+
 
 
 if __name__ == '__main__':
