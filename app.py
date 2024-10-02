@@ -194,8 +194,7 @@ def recibir_mensajes():
                 json_file = f'usu_numbers/usuario_{numero}.json'
 
                 if os.path.exists(json_file):
-                # if json_file.exists():
-                    with json_file.open('r') as file:
+                    with open(json_file, 'r') as file:
                         try:
                             json_data = json.load(file)
                             if not isinstance(json_data, list):
@@ -211,7 +210,7 @@ def recibir_mensajes():
                 if not os.path.exists('usu_numbers'):
                     os.makedirs('usu_numbers')
 
-                with json_file.open('w') as file:
+                with open(json_file, 'w') as file:
                     json.dump(json_data, file, indent=4)
 
             return jsonify({'status': 'Datos recibidos y guardados correctamente'}), 200
@@ -223,8 +222,6 @@ def recibir_mensajes():
     except Exception as e:
         logging.error(f"Error en el procesamiento del mensaje: {e}", exc_info=True)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
-
-
 
 
 
