@@ -7,11 +7,17 @@ import string
 import os
 from pathlib import Path
 import logging
-
+import requests
+import time
 
 app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
+PAGE_ID = "391832127348225"
+ACCESS_TOKEN = "EAAOcMhFbbo0BO1XyIdMawK8ZCAoVHx1mzd9eqX0LWAkBQkW1k3CZCDUumEcQArkDg6cOnI3yoQxXTEZBNJO4F347CWVd2JcKbKUS0VCvPpiHVWUh26jP7i1Jih7ClbA9QzLrCKnWYpjDG7TgYAODtnksN9bfAnMifi3ZCBScBW9E6x9TWb8akgCwUXXChriUWNXZBZARutTjtA5PZClaAKLFkuu7GPfsaJxkxsVz1EMKGUZD"
+
+
+
 mensajes_procesados = set()
 estado_usuario = {}
 
@@ -162,7 +168,6 @@ def obtener_nombres_todos_los_jsons():
         print("Error al obtener los nombres de los archivos json y listarlos:", e)
         return jsonify({'error': f'Error al obtener los nombres de los archivos json y listarlos: {str(e)}'}), 500
 
-
 @app.route('/webhook', methods=['POST'])
 def recibir_mensajes():
     try:
@@ -222,6 +227,64 @@ def recibir_mensajes():
     except Exception as e:
         logging.error(f"Error en el procesamiento del mensaje: {e}", exc_info=True)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
+
+@app.route('/enviar_msg-whatsapp_api', methods=['POST'])
+def enviar_msg_whatsapp_api():
+    try:
+        # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
+        data = request.get_json()
+        print("data...........................................................",data)
+
+        mensaje = ""
+        numero= ""
+        mensaje_id=""
+        
+        conn = http.client.HTTPSConnection("graph.facebook.com")
+        payload = json.dumps(mensaje)
+        headers = {
+            'Authorization': f'Bearer {ACCESS_TOKEN}',
+            'Content-Type': 'application/json'
+        }
+        conn.request("POST", f"/v20.0/{PAGE_ID}/messages", payload, headers)
+        res = conn.getresponse()
+        data = res.read()
+        print("Respuesta de Facebook API:", data.decode("utf-8"))
+        # eliminar_id_del_json(mensaje_id,numero)
+
+            # URL de tu API en Render para eliminar mensajes
+        url_eliminar_mensajes = 'https://chatbot-python-whatsapp.onrender.com/eliminar-mensajes'
+        try:
+            # Crear el payload para enviar el ID del mensaje por POST
+            payload = {"id": mensaje_id,"numero":numero}
+            # Enviar solicitud POST con el ID
+            response = requests.post(url_eliminar_mensajes, json=payload)
+            # Verificar si la solicitud fue exitosa
+            if response.status_code == 200:
+                print(f"Mensaje con ID {mensaje_id} eliminado correctamente.")
+                # break  # Salir del ciclo si la eliminación fue exitosa
+            elif response.status_code == 404:
+                print(f"No se encontró el mensaje con ID {mensaje_id}.")
+                # break  # Salir del ciclo si no se encuentra el mensaje
+            else:
+                print(f"Error: {response.status_code}, {response.json()}")
+                # break  # Salir del ciclo en caso de error
+        except Exception as e:
+            print(f"Error al intentar eliminar el mensaje: {e}")
+        # Esperar 10 segundos antes de volver a intentarlo
+        time.sleep(10)      
+
+    except Exception as e:
+        # Manejo de errores durante la lectura o escritura del archivo
+        print("Error al procesar la eliminación del mensaje:", e)
+        return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
+
+
+
+## token de Envio 
+
+
+
+
 
 
 
