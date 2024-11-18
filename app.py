@@ -251,7 +251,7 @@ def enviar_msg_whatsapp_api():
         print("Respuesta de Facebook API:", data.decode("utf-8"))
         # eliminar_id_del_json(mensaje_id,numero)
 
-            # URL de tu API en Render para eliminar mensajes
+        # URL de tu API en Render para eliminar mensajes
         url_eliminar_mensajes = 'https://chatbot-python-whatsapp.onrender.com/eliminar-mensajes'
         try:
             # Crear el payload para enviar el ID del mensaje por POST
