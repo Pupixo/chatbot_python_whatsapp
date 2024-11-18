@@ -235,9 +235,9 @@ def enviar_msg_whatsapp_api():
         data = request.get_json()
         print("data...........................................................",data)
 
-        mensaje = ""
-        numero= ""
-        mensaje_id=""
+        mensaje = data['mensaje']
+        numero= data['numero']
+        mensaje_id= data['mensaje_id'] 
         
         conn = http.client.HTTPSConnection("graph.facebook.com")
         payload = json.dumps(mensaje)
