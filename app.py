@@ -134,6 +134,8 @@ def eliminar_json_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
+
+
 @app.route('/listar-jsons-usu', methods=['GET'])
 def obtener_nombres_todos_los_jsons():
     try:
@@ -249,30 +251,70 @@ def enviar_msg_whatsapp_api():
         res = conn.getresponse()
         data = res.read()
         print("Respuesta de Facebook API:", data.decode("utf-8"))
-        # eliminar_id_del_json(mensaje_id,numero)
 
-        # URL de tu API en Render para eliminar mensajes
-        url_eliminar_mensajes = 'https://chatbot-python-whatsapp.onrender.com/eliminar-mensajes'
         try:
-            # Crear el payload para enviar el ID del mensaje por POST
-            payload = {"id": mensaje_id,"numero":numero}
-            # Enviar solicitud POST con el ID
-            response = requests.post(url_eliminar_mensajes, json=payload)
-            # Verificar si la solicitud fue exitosa
-            if response.status_code == 200:
-                print(f"Mensaje con ID {mensaje_id} eliminado correctamente.")
-                # break  # Salir del ciclo si la eliminación fue exitosa
-            elif response.status_code == 404:
-                print(f"No se encontró el mensaje con ID {mensaje_id}.")
-                # break  # Salir del ciclo si no se encuentra el mensaje
-            else:
-                print(f"Error: {response.status_code}, {response.json()}")
-                # break  # Salir del ciclo en caso de error
-        except Exception as e:
-            print(f"Error al intentar eliminar el mensaje: {e}")
-        # Esperar 10 segundos antes de volver a intentarlo
-        time.sleep(10)      
 
+            # Validar que el JSON contenga el campo 'id'
+            if not data or 'id' not in data:
+                return jsonify({'error': 'No se proporcionó un ID válido para eliminar'}), 400
+            
+            id_eliminar = mensaje_id
+            print("ID a eliminar:", id_eliminar)
+
+            print("numero a eliminar:", numero)  
+
+            # Definir el nombre del archivo JSON
+            json_file = f'usu_numbers/usuario_{numero}.json'
+
+            # Verificar si el archivo existe
+            if os.path.exists(json_file):
+                # Cargar los datos del archivo JSON
+                with open(json_file, 'r') as file:
+                    try:
+                        json_data = json.load(file)
+                    except json.JSONDecodeError:
+                        return jsonify({'error': 'El archivo JSON está corrupto o mal formado'}), 500
+
+                print("ID a json_data:", json_data)
+
+                # Verificar que json_data es una lista
+                if isinstance(json_data, list):
+                    print("isinstance")
+
+                    nuevos_datos = [
+                                    entry for entry in json_data 
+                                    if all(
+                                        message.get('id') != id_eliminar
+                                        for change in entry.get('entry', [{}])[0].get('changes', [{}])
+                                        for message in change.get('value', {}).get('messages', [])
+                                    )
+                                ]
+                
+                    print("nuevos_datos",nuevos_datos)
+                    print("len  nuevos_datos",len(nuevos_datos))
+                    print("len  json_data",len(json_data))
+
+                    # Guardar los datos actualizados en el archivo JSON solo si hubo cambios
+                    if len(nuevos_datos) < len(json_data):
+                        with open(json_file, 'w') as file:
+                            json.dump(nuevos_datos, file, indent=4)
+                        print("Mensaje eliminado correctamente")
+                        return jsonify({'status': 'Mensaje eliminado correctamente'}), 200
+                    else:
+                        print("No se encontró un mensaje con ese ID")
+                        return jsonify({'status': 'No se encontró un mensaje con ese ID'}), 404
+                else:
+                    print("no isinstance")
+                    return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
+            else:
+                return jsonify({'error': 'El archivo no existe'}), 404
+
+        except Exception as e:
+            # Manejo de errores durante la lectura o escritura del archivo
+            print("Error al procesar la eliminación del mensaje:", e)
+            return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
+
+       
     except Exception as e:
         # Manejo de errores durante la lectura o escritura del archivo
         print("Error al procesar la eliminación del mensaje:", e)
