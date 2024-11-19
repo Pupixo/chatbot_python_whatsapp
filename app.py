@@ -94,8 +94,8 @@ def eliminar_json_whatsapp_api():
                     json_data = json.load(file)
                 except json.JSONDecodeError:
                     return jsonify({'error': 'El archivo JSON está corrupto o mal formado'}), 500
-
             print("ID a json_data:", json_data)
+
 
             # Verificar que json_data es una lista
             if isinstance(json_data, list):
@@ -235,6 +235,8 @@ def enviar_msg_whatsapp_api():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
         data = request.get_json()
+        datos = request.get_json()
+
         print("data...........................................................",data)
 
         mensaje = data['mensaje']
@@ -254,10 +256,7 @@ def enviar_msg_whatsapp_api():
 
         try:
 
-            # Validar que el JSON contenga el campo 'id'
-            if not data or 'id' not in data:
-                return jsonify({'error': 'No se proporcionó un ID válido para eliminar'}), 400
-            
+
             id_eliminar = mensaje_id
             print("ID a eliminar:", id_eliminar)
 
