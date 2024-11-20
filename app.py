@@ -238,8 +238,11 @@ def enviar_msg_whatsapp_api():
         numero= data['numero']
         mensaje_id= data['mensaje_id'] 
         
+# json.dumps(mensaje)
+        print("mensaje...........................................................",mensaje)
+
         conn = http.client.HTTPSConnection("graph.facebook.com")
-        payload = json.dumps(mensaje)
+        payload = mensaje
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}',
             'Content-Type': 'application/json'
