@@ -330,7 +330,7 @@ def enviar_msg_whatsapp_api():
         print("mensaje...........................................................",mensaje)
 
         conn = http.client.HTTPSConnection("graph.facebook.com")
-        payload = json.dump(mensaje)  
+        payload = json.dumps(mensaje)
 
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}',
