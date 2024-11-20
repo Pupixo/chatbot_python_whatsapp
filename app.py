@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
 PAGE_ID = "391832127348225"
-ACCESS_TOKEN = "EAAOcMhFbbo0BO0HKl6gtivZCo5bQN0AQvkYn5WxJhaM3tr2kndK2GVbq5cf0gEWvZBVEN1m8UTvBOPIpdond5CMatFVsLpZBf7I0KZAxPsKCQmzXgAPI1qwAUvojBFeHlZAaoeYyAJpzcKxhZA3GDUtVrcSKb35GLyrqvpIrr1eJMecE4GGk1hj97iRCU24m9zddYh64ZAUtEFoZAYsF8FcuIq0WnwezQYZACM37mXbZCRsBim"
+ACCESS_TOKEN = "EAAOcMhFbbo0BOwzzZB0RTXNyI9BZAMWPo1jBTK3g12Y7kynFZBHm0QFCjHpGOKAjoCQ8eKQxMjMZCp8ERY20JyL1iE1srZC49Wj7B2lglKZCK2F8gD20yyaTYZCWFQp3UtyHTaoV1VUk3V1pSLIrTpIAVoPq0Nb33d3W2Br003jNF77sxx26JWjIp13g6PC70lsWlYHajCJXZAaJJNEojnbC7F6PKC65XUyW2dBfeHWRezcZD"
 
 
 mensajes_procesados = set()
@@ -250,14 +250,10 @@ def enviar_msg_whatsapp_api():
         print("Respuesta de Facebook API:", data.decode("utf-8"))
 
         try:
-
             if mensaje_id == None:
-
                 id_eliminar = mensaje_id
                 print("ID a eliminar:", id_eliminar)
-
                 print("numero a eliminar:", numero)  
-
                 # Definir el nombre del archivo JSON
                 json_file = f'usu_numbers/usuario_{numero}.json'
 
