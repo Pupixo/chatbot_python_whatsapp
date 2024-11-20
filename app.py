@@ -227,7 +227,7 @@ def recibir_mensajes():
         logging.error(f"Error en el procesamiento del mensaje: {e}", exc_info=True)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
 
-@app.route('/', methods=['POST'])
+@app.route('/enviar_msg_masivos-whatsapp_api', methods=['POST'])
 def enviar_msg_whatsapp_api():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
@@ -299,7 +299,7 @@ def enviar_msg_whatsapp_api():
                     else:
                         print("no isinstance")
                         return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
-                else:enviar_msg_masivos-whatsapp_api
+                else:
                     return jsonify({'error': 'El archivo no existe'}), 404
             else:
 
