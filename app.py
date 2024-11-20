@@ -228,7 +228,7 @@ def recibir_mensajes():
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
 
 @app.route('/enviar_msg_masivos-whatsapp_api', methods=['POST'])
-def enviar_msg_whatsapp_api():
+def enviar_msg_masivas_whatsapp_api():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
         data = request.get_json()
@@ -331,7 +331,7 @@ def enviar_msg_whatsapp_api():
 
         conn = http.client.HTTPSConnection("graph.facebook.com")
         payload = json.dump(mensaje)  
-        
+
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}',
             'Content-Type': 'application/json'
