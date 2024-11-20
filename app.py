@@ -227,7 +227,7 @@ def recibir_mensajes():
         logging.error(f"Error en el procesamiento del mensaje: {e}", exc_info=True)
         return jsonify({'error': 'Error en el procesamiento del mensaje'}), 500
 
-@app.route('/enviar_msg-whatsapp_api', methods=['POST'])
+@app.route('/', methods=['POST'])
 def enviar_msg_whatsapp_api():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
@@ -238,7 +238,6 @@ def enviar_msg_whatsapp_api():
         numero= data['numero']
         mensaje_id= data['mensaje_id'] 
         
-# json.dumps(mensaje)
         print("mensaje...........................................................",mensaje)
 
         conn = http.client.HTTPSConnection("graph.facebook.com")
@@ -300,9 +299,8 @@ def enviar_msg_whatsapp_api():
                     else:
                         print("no isinstance")
                         return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
-                else:
+                else:enviar_msg_masivos-whatsapp_api
                     return jsonify({'error': 'El archivo no existe'}), 404
-                
             else:
 
                 print("no se elimina nada, ya que es un mensaje de envio")  
@@ -312,11 +310,111 @@ def enviar_msg_whatsapp_api():
             print("Error al procesar la eliminación del mensaje:", e)
             return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
-       
     except Exception as e:
         # Manejo de errores durante la lectura o escritura del archivo
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
+
+
+@app.route('/enviar_msg-whatsapp_api', methods=['POST'])
+def enviar_msg_whatsapp_api():
+    try:
+        # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
+        data = request.get_json()
+        print("data...........................................................",data)
+
+        mensaje = data['mensaje']
+        numero= data['numero']
+        mensaje_id= data['mensaje_id'] 
+        
+        print("mensaje...........................................................",mensaje)
+
+        conn = http.client.HTTPSConnection("graph.facebook.com")
+        payload = json.dump(mensaje)  
+        headers = {
+            'Authorization': f'Bearer {ACCESS_TOKEN}',
+            'Content-Type': 'application/json'
+        }
+        conn.request("POST", f"/v20.0/{PAGE_ID}/messages", payload, headers)
+        res = conn.getresponse()
+        data = res.read()
+        print("Respuesta de Facebook API:", data.decode("utf-8"))
+
+        try:
+            if mensaje_id == None:
+                id_eliminar = mensaje_id
+                print("ID a eliminar:", id_eliminar)
+                print("numero a eliminar:", numero)  
+                # Definir el nombre del archivo JSON
+                json_file = f'usu_numbers/usuario_{numero}.json'
+
+                # Verificar si el archivo existe
+                if os.path.exists(json_file):
+                    # Cargar los datos del archivo JSON
+                    with open(json_file, 'r') as file:
+                        try:
+                            json_data = json.load(file)
+                        except json.JSONDecodeError:
+                            return jsonify({'error': 'El archivo JSON está corrupto o mal formado'}), 500
+
+                    print("ID a json_data:", json_data)
+
+                    # Verificar que json_data es una lista
+                    if isinstance(json_data, list):
+                        print("isinstance")
+
+                        nuevos_datos = [
+                                        entry for entry in json_data 
+                                        if all(
+                                            message.get('id') != id_eliminar
+                                            for change in entry.get('entry', [{}])[0].get('changes', [{}])
+                                            for message in change.get('value', {}).get('messages', [])
+                                        )
+                                    ]
+                    
+                        print("nuevos_datos",nuevos_datos)
+                        print("len  nuevos_datos",len(nuevos_datos))
+                        print("len  json_data",len(json_data))
+
+                        # Guardar los datos actualizados en el archivo JSON solo si hubo cambios
+                        if len(nuevos_datos) < len(json_data):
+                            with open(json_file, 'w') as file:
+                                json.dump(nuevos_datos, file, indent=4)
+                            print("Mensaje eliminado correctamente")
+                            return jsonify({'status': 'Mensaje eliminado correctamente'}), 200
+                        else:
+                            print("No se encontró un mensaje con ese ID")
+                            return jsonify({'status': 'No se encontró un mensaje con ese ID'}), 404
+                    else:
+                        print("no isinstance")
+                        return jsonify({'error': 'El formato del archivo JSON es incorrecto, debe ser una lista de mensajes'}), 500
+                else:
+                    return jsonify({'error': 'El archivo no existe'}), 404
+            else:
+
+                print("no se elimina nada, ya que es un mensaje de envio")  
+
+        except Exception as e:
+            # Manejo de errores durante la lectura o escritura del archivo
+            print("Error al procesar la eliminación del mensaje:", e)
+            return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
+
+    except Exception as e:
+        # Manejo de errores durante la lectura o escritura del archivo
+        print("Error al procesar la eliminación del mensaje:", e)
+        return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
