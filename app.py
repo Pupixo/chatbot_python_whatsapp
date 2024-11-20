@@ -342,7 +342,7 @@ def enviar_msg_whatsapp_api():
         print("Respuesta de Facebook API:", data.decode("utf-8"))
 
         try:
-            if mensaje_id == None:
+            if mensaje_id != None:
                 id_eliminar = mensaje_id
                 print("ID a eliminar:", id_eliminar)
                 print("numero a eliminar:", numero)  
@@ -393,7 +393,8 @@ def enviar_msg_whatsapp_api():
                     return jsonify({'error': 'El archivo no existe'}), 404
             else:
 
-                print("no se elimina nada, ya que es un mensaje de envio")  
+                print("no se elimina nada, ya que es un mensaje de envio masivo con id none")  
+                return jsonify({'status': 'Mensaje enviado correctamente'}), 200
 
         except Exception as e:
             # Manejo de errores durante la lectura o escritura del archivo
