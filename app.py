@@ -9,12 +9,13 @@ from pathlib import Path
 import logging
 import requests
 import time
+from correo import enviar_correo
 
 app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
 PAGE_ID = "391832127348225"
-ACCESS_TOKEN = "EAAOcMhFbbo0BOZBleTLKpvkb3fKZBrdj52S46iH06DwJRGfJGNdo0paUwiF6ppa2DC9QKDWuP0cbVxPvHZAOnwlrQDDrAugeiprrJYjOpIo4LugVRxPrcevTZA6AiNBfQZALQhcWOnosqzwwRiWHSWkhqryMQMFJ7GsL73bb3ZBZCvpAPZCxDahCGuclYoAr351IDoZAKmEBvowntVtBPmP9iH3R71tvCYEyh6Gbz3R0qti0ZD"
+ACCESS_TOKEN = "EAAOcMhFbbo0BO7pYklXXcrZAKIZBQzH6P6DYIQe3INXdatzTUP51qHEoFpV1Jd81hkhGNZCWPqJOH8ZAPY8EUBS8rgvoI72JfnXhKZCt6Oq5BdnhGPWMAmUQabLZCFqScez061CNCxpZB7eQZCYeAKXcGHo1n2srlpKue1zN1cpTEAGTv0kPMDFogPPcBNrbMvgA7dCnVkZByJv0l9oT374VDIOMAoBJXtVocn6ZBVVNzUM6cZD"
 
 
 mensajes_procesados = set()
@@ -406,15 +407,26 @@ def enviar_msg_whatsapp_api():
         print("Error al procesar la eliminación del mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
+@app.route('/envio_correo_autenticar', methods=['POST'])
+def envio_correo_autenticar():
+    try:
+        # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
+        data = request.get_json()
+        print("data...........................................................",data)
 
+        correo = data['correo']
+        codigo_validacion= data['codigo_validacion'] 
 
+        print("correo...........................................................",correo)
+        print("codigo_validacion...........................................................",codigo_validacion)
+    
+        enviar_correo(correo, codigo_validacion)  # Enviar correo con el código
+        
 
-
-
-
-
-
-
+    except Exception as e:
+        # Manejo de errores durante la lectura o escritura del archivo
+        print("Error al procesar el envio de correo:", e)
+        return jsonify({'error': f'Error al enviar correo: {str(e)}'}), 500
 
 
 
