@@ -422,6 +422,7 @@ def envio_correo_autenticar():
 
         enviar_correo(correo, codigo_validacion)  # Enviar correo con el código
         
+        return jsonify({'status': 'Correo enviado correctamente'}), 200
 
     except Exception as e:
         # Manejo de errores durante la lectura o escritura del archivo
