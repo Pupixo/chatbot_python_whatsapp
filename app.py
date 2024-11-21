@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
 PAGE_ID = "391832127348225"
-ACCESS_TOKEN = "EAAOcMhFbbo0BO7pYklXXcrZAKIZBQzH6P6DYIQe3INXdatzTUP51qHEoFpV1Jd81hkhGNZCWPqJOH8ZAPY8EUBS8rgvoI72JfnXhKZCt6Oq5BdnhGPWMAmUQabLZCFqScez061CNCxpZB7eQZCYeAKXcGHo1n2srlpKue1zN1cpTEAGTv0kPMDFogPPcBNrbMvgA7dCnVkZByJv0l9oT374VDIOMAoBJXtVocn6ZBVVNzUM6cZD"
+ACCESS_TOKEN = "EAAOcMhFbbo0BO7QFvgEGRgR4U0fDqZCqFG8LewHdAYdnX543nQFkddWbKVfTpEMJQ0sPd9vlvTW0hCQaMJneooFpaGmkG8dWR42r5gcZBNCszOaaT6WK2iXk6kqw7iNoXOROLA5ZCalZBRf3unejgIXuquTY1vaMCDyp38ZA4rdBZBzQI0tv3mKlmloraBZCgfaVTfUdIpEWV2rKZCTpAaLJiOPiMMACKvMWlZBieyxEpYUMZD"
 
 
 mensajes_procesados = set()
@@ -419,7 +419,7 @@ def envio_correo_autenticar():
 
         print("correo...........................................................",correo)
         print("codigo_validacion...........................................................",codigo_validacion)
-    
+
         enviar_correo(correo, codigo_validacion)  # Enviar correo con el código
         
 
