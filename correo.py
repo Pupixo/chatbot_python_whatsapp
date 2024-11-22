@@ -6,7 +6,7 @@ from email.mime.image import MIMEImage
 def enviar_correo(email, code):
     # Retrieve credentials using the function from conexionbd.py
     usuario = 'pupixo988@gmail.com'
-    contrasenia = 'vrts fwsn gbhz uuxh'
+    contrasenia = 'baed xmpx usfv uqxz'
 
     # Ruta a la imagen descargada
     image_path = "OIP.jpg"  # Cambia esta ruta a donde tengas la imagen
