@@ -16,7 +16,7 @@ app = Flask(__name__)
 TOKEN_ANDERCODE = "ANDERCODE"
 PAGE_ID = "424691747405507" 
 
-ACCESS_TOKEN = "EAAmLCAmlVB4BOyJO1lgaj5HMZCNZAA3QBSLxDJGDXm6arQ3U5GrxEheqToznk166ZAZAT2pngNmjZAE7WTD85WOiYBCdColfe7hPc2NNymlZA5ytJjZCaHx9CZAPWegORGolKPqMbdv2TYCYQvNfYFEeYjQ0YzkIUqXM1WbB5e9r3a1HtMVEirdKRdYof7kdpIW50oCqyNIX7LZAXigt2hB8ZBwW3Us7qvqpbVLZAEZD"
+ACCESS_TOKEN = "EAAmLCAmlVB4BOw5U0rWUeex9L1EQHWBPS0IJxLrQAYcvlUkVQhZCpqTVVIy6q9mgFVz2qgdEj998sYmV4ZA4uXMVK4ViTCq63yEEgxZAjojZCZB2vY2GVJqY5rzZBLCQmDObksY88Afd4suZAdxBLLBIAUplH9BzXzKfGuEzssKOQKdDWMzTx5fca4oqtZCYR8Wmbav3bKVUhfLOZAvH0lDIL70elVoC2VqxkI1IZD"
 
 mensajes_procesados = set()
 estado_usuario = {}
@@ -242,29 +242,24 @@ def enviar_msg_masivas_whatsapp_api():
         print("mensaje...........................................................",mensaje)
         print("mensaje.type....................",type(mensaje))    
 
-
         print("mensaje_id.....................",mensaje_id)
         print("mensaje_id.type....................",type(mensaje_id))    
 
-
-
         conn = http.client.HTTPSConnection("graph.facebook.com")
         payload =  json.dumps(mensaje)
-        headers = {
-            'Authorization': f'Bearer {ACCESS_TOKEN}',
-            'Content-Type': 'application/json'
-        }
+        headers =   {
+                        'Authorization': f'Bearer {ACCESS_TOKEN}',
+                        'Content-Type': 'application/json'
+                    }
+        
         conn.request("POST", f"/v20.0/{PAGE_ID}/messages", payload, headers)
         res = conn.getresponse()
         data = res.read()
         print("Respuesta de Facebook API:", data.decode("utf-8"))
 
-  
         try:
-
             print("mensaje_id.....................",mensaje_id)
             print("mensaje_id.type....................",type(mensaje_id))       # <class 'int'>
-
 
             if mensaje_id == None:
                 id_eliminar = mensaje_id
