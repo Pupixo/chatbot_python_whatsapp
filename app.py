@@ -240,11 +240,14 @@ def enviar_msg_masivas_whatsapp_api():
         mensaje_id= data['mensaje_id'] 
         
         print("mensaje...........................................................",mensaje)
+        print("mensaje.type....................",type(mensaje))    
 
 
         print("mensaje_id.....................",mensaje_id)
         print("mensaje_id.type....................",type(mensaje_id))    
-    
+
+
+
         conn = http.client.HTTPSConnection("graph.facebook.com")
         payload =  json.dumps(mensaje)
         headers = {
