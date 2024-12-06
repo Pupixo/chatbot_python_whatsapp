@@ -313,7 +313,7 @@ def enviar_msg_masivas_whatsapp_api():
 
     except Exception as e:
         # Manejo de errores durante la lectura o escritura del archivo
-        print("Error al procesar la eliminación del mensaje:", e)
+        print("Error al procesar la eliminación del mensaje al enviar mensaje:", e)
         return jsonify({'error': f'Error al procesar la eliminación: {str(e)}'}), 500
 
 
