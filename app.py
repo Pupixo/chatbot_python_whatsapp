@@ -253,6 +253,11 @@ def enviar_msg_masivas_whatsapp_api():
         print("Respuesta de Facebook API:", data.decode("utf-8"))
 
         try:
+
+            print("mensaje_id.....................",mensaje_id)
+            print("mensaje_id.type....................",type(mensaje_id))       # <class 'int'>
+
+
             if mensaje_id == None:
                 id_eliminar = mensaje_id
                 print("ID a eliminar:", id_eliminar)
