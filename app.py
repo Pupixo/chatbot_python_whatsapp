@@ -16,7 +16,7 @@ app = Flask(__name__)
 TOKEN_ANDERCODE = "ANDERCODE"
 PAGE_ID = "424691747405507" 
 
-ACCESS_TOKEN = "EAAmLCAmlVB4BO3dgxkZCYFTEtDd9ZA0TlN8DhES578GdrKJTsVF54uVm1sjiR9u1Nty606Iyxxy9DRPxdhcI2ZBOvKJKZAbvoXEn9qsZBYM11VqKenCGiQXbv1ttWUamCAcZBceCtJlvHOVWqmVEoZAJnZAh6gS0faj9kEkVyN8ZCpebtImmLAPC1dUN0GxgAwjxHKvzLupV8NGdhhsOJXzDk2iXTFABRuCYt6JJZA"
+ACCESS_TOKEN = "EAAmLCAmlVB4BO1wJQuwuPFnPIgpZA7lAVMCZAkevW3yIDZAgxBANl8iC18BQtBIGwoUBOswob3NvbNmSduB5drhU4z4WN6YboZCkUKMzTMkIsiOKMiGHMGxYQBVJGO6NjREDsIdr3NIuEY8BMf27QSqRK7QoJf6eJKRTiN34sTvNeZCCeij01GXJQefZBZCjuypngPv6aw99neZClLlYKyk5LzBWKrTFvXnlquQZD"
 
 mensajes_procesados = set()
 estado_usuario = {}
@@ -420,7 +420,7 @@ def envio_correo_autenticar():
     try:
         # Obtener el criterio de eliminación desde el cuerpo de la solicitud POST
         data = request.get_json()
-        print("data...........................................................",data)
+        print("data..correo.........................................................",data)
 
         correo = data['correo']
         codigo_validacion= data['codigo_validacion'] 
