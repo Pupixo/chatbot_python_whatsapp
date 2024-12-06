@@ -14,7 +14,7 @@ from correo import enviar_correo
 app = Flask(__name__)
 
 TOKEN_ANDERCODE = "ANDERCODE"
-PAGE_ID = "424691747405507"
+PAGE_ID = "424691747405507" 
 
 ACCESS_TOKEN = "EAAmLCAmlVB4BOyJO1lgaj5HMZCNZAA3QBSLxDJGDXm6arQ3U5GrxEheqToznk166ZAZAT2pngNmjZAE7WTD85WOiYBCdColfe7hPc2NNymlZA5ytJjZCaHx9CZAPWegORGolKPqMbdv2TYCYQvNfYFEeYjQ0YzkIUqXM1WbB5e9r3a1HtMVEirdKRdYof7kdpIW50oCqyNIX7LZAXigt2hB8ZBwW3Us7qvqpbVLZAEZD"
 
@@ -241,8 +241,12 @@ def enviar_msg_masivas_whatsapp_api():
         
         print("mensaje...........................................................",mensaje)
 
+
+        print("mensaje_id.....................",mensaje_id)
+        print("mensaje_id.type....................",type(mensaje_id))    
+    
         conn = http.client.HTTPSConnection("graph.facebook.com")
-        payload = mensaje
+        payload =  json.dumps(mensaje)
         headers = {
             'Authorization': f'Bearer {ACCESS_TOKEN}',
             'Content-Type': 'application/json'
@@ -252,6 +256,7 @@ def enviar_msg_masivas_whatsapp_api():
         data = res.read()
         print("Respuesta de Facebook API:", data.decode("utf-8"))
 
+  
         try:
 
             print("mensaje_id.....................",mensaje_id)
